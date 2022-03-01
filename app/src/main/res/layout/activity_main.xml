@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/softWhite">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/module_status_card"
+        style="@style/DefaultCard">
+
+        <LinearLayout
+            style="@style/Default"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/module_status_icon"
+                style="@style/DefaultImage" />
+
+            <LinearLayout
+                style="@style/Default"
+                android:orientation="vertical"
+                android:paddingVertical="25dp">
+
+                <TextView
+                    android:id="@+id/module_status_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/service_status_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/extension_status_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textColor="@android:color/white"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/serve_times"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <ScrollView
+        android:id="@+id/menu_scroll_bar"
+        style="@style/Default"
+        android:layout_below="@id/module_status_card"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            style="@style/Default"
+            android:orientation="vertical">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/menu_detection_test"
+                style="@style/DefaultCard"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    style="@style/Default"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        style="@style/DefaultImage"
+                        android:src="@drawable/baseline_my_location_24" />
+
+                    <TextView
+                        style="@style/DefaultText.Option.Card"
+                        android:text="@string/title_test" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+<!--
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/menu_settings"
+                style="@style/DefaultCard"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    style="@style/Default"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        style="@style/DefaultImage"
+                        android:src="@drawable/baseline_settings_20" />
+
+                    <TextView
+                        style="@style/DefaultText.Option.Card"
+                        android:text="@string/title_settings" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+-->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/menu_about"
+                style="@style/DefaultCard"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    style="@style/Default"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        style="@style/DefaultImage"
+                        android:src="@drawable/baseline_info_24" />
+
+                    <TextView
+                        style="@style/DefaultText.Option.Card"
+                        android:text="@string/title_about" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </ScrollView>
+    <!--
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/AppTheme.ActionBar"
+        app:popupTheme="@style/AppTheme"
+        />
+
+    <TextView
+        android:id="@+id/xposed_disabled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:text="@string/xposed_disabled"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
+        android:visibility="visible"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/xposed_disabled_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/xposed_disabled"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:gravity="center_horizontal"
+        android:text="@string/xposed_disabled_sub"
+        android:visibility="visible"
+        tools:ignore="TextContrastCheck" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
+
+        <RelativeLayout
+            android:id="@+id/switch_layout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:id="@+id/apps_count_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/list_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/apps_count_num"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="start"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:textStyle="bold"
+                android:theme="@style/AppTheme" />
+
+            <TextView
+                android:id="@+id/location_data_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/list_type"
+                android:layout_marginStart="16dp" />
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/app_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/switch_layout"
+            android:scrollbars="vertical" />
+
+    </RelativeLayout>-->
+</RelativeLayout>

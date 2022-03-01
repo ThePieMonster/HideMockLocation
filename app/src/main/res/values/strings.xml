@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">Hide Mock Location</string>
+    <string name="donate">Donate</string>
+    <string name="xposed_disabled">Hide Mock Location is disabled.</string>
+    <string name="xposed_disabled_sub">To use it, please enable module in LSPosed and reboot device. Make sure that the module is installed on internal storage.</string>
+    <string name="donate_url">https://www.paypal.com/</string>
+    <string name="search">Search</string>
+    <string name="icon">Icon</string>
+    <string name="settings">Settings</string>
+    <string name="general">General</string>
+    <string name="show_icon">Show app icon in launcher</string>
+    <string name="gms_whitelist">Whitelist Google Play Services</string>
+    <string name="gms_whitelist_sub">When unchecked, some whitelisted apps may not see that location is mocked.</string>
+
+    <string name="select_apps_activity_title">Select Apps</string>
+
+    <string name="title_test">View Location Data</string>
+    <string name="title_credit">Location whitelist</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_about">About this module</string>
+
+    <string name="card_title_not_activated">Not activated</string>
+    <string name="card_detail_not_activated">Make sure you have correctly set up this module</string>
+
+    <string name="card_title_activated">Activated</string>
+    <string name="card_detail_activated">Go settings for further set up</string>
+    <string name="card_serve_time">Served for 0 times</string>
+
+    <string name="dialog_not_available_dialog">Not available</string>
+    <string name="dialog_not_available_content">Coming soon :)</string>
+
+    <string name="about_slogan">About This Module</string>
+    <string name="about_introduction_title">About</string>
+    <string name="about_introduction_content">This module is designed to hide the use of the Android Mock Locations feature from system and application usage. When this module is enabled, the mock locations feature will show as disabled to all applications. \n\nhttps://github.com/ThePieMonster/HideMockLocation</string>
+
+    <string name="about_legal_title">Legal</string>
+    <string name="about_legal_content">You agree to use this module (i.e. Hide Mock Locations) only for legally compliant purposes. You agree that the author will not be held liable for any consequences resulting from a violation of this statement. \n\nBy continuing to use this module, you agree to the above terms.</string>
+
+    <string name="about_recommendation_title">Recommendations</string>
+
+    <string name="about_developer_title">Developers &amp; Contributors</string>
+
+    <string name="about_developer_name_pie">ThePieMonster</string>
+    <string name="about_developer_description_pie">Lead developer</string>
+    <string name="about_developer_url_pie">https://github.com/ThePieMonster</string>
+
+    <string name="about_opensource_title">Open Source Licenses</string>
+    <string name="no_result">No result</string>
+
+    <string name="alert_dialog_title">Location Data</string>
+    <string name="alert_dialog_ok">Ok</string>
+    <string name="alert_dialog_close">Close</string>
+</resources>

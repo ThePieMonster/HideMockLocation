@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <PreferenceCategory
+        android:title="@string/general">
+
+        <CheckBoxPreference
+            android:key="icon_pref"
+            android:title="@string/show_icon"
+            android:defaultValue="true"/>
+        <CheckBoxPreference
+            android:key="gms_whitelist_pref"
+            android:title="@string/gms_whitelist"
+            android:summary="@string/gms_whitelist_sub"
+            android:defaultValue="false"/>/>
+
+    </PreferenceCategory>
+</PreferenceScreen>
