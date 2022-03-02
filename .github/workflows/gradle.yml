@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - name: Checkout code
-    - uses: actions/checkout@v2
+      uses: actions/checkout@v2
     - name: Set up JDK
       uses: actions/setup-java@v2
       with:
@@ -30,4 +30,3 @@ jobs:
           if [ ! -f "gradlew" ]; then gradle wrapper; fi
           chmod +x gradlew
           ./gradlew assembleDebug
-          
