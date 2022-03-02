@@ -23,7 +23,7 @@
     <string name="card_detail_not_activated">Make sure you have correctly set up this module</string>
 
     <string name="card_title_activated">Activated</string>
-    <string name="card_detail_activated">Go settings for further set up</string>
+    <string name="card_detail_activated">View Location Data to test module</string>
     <string name="card_serve_time">Served for 0 times</string>
 
     <string name="dialog_not_available_dialog">Not available</string>

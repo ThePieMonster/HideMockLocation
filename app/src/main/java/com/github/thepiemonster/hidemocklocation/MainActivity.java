@@ -31,7 +31,7 @@ import android.view.View;
 import android.widget.Toast;
 
 
-public class MainActivity extends AppCompatActivity implements LocationListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
     public static SharedPreferences prefs;
@@ -151,9 +151,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             try {
                 getLocationProvider();
                 location = locationManager.getLastKnownLocation(provider);
+                // location could return null if no location updates have been provided since device boot. IE: opened Google maps.
+                if(location == null) {
+                    locationManager.requestLocationUpdates(provider, 0, 0, locationListener);
+                    location = locationManager.getLastKnownLocation(provider);
+                    if(location == null) {
+                        throwErrorDialog("Location is null");
+                        return;
+                    }
+                }
                 count = maxAttempts;
             } catch (Exception e) {
-                throwErrorDialog(e);
+                throwErrorDialog(e.toString());
+                return;
             }
         }
 
@@ -165,9 +175,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(MainActivity.this, R.style.AlertDialogTheme);
         dialogBuilder.setTitle(getString(R.string.alert_dialog_title));
 
-        String isMockSettingsOlderThanAndroid6Text = "Current SDK Older Than Android 6: ALLOW_MOCK_LOCATION Setting: ";
+        String infoText = "Enable/Disable a mock location provider application and then view the below info.";
+        String isMockSettingsOlderThanAndroid6Text = "\n\nCurrent SDK Older Than Android 6: ALLOW_MOCK_LOCATION Setting: ";
         String isMockSettingsNewerThanAndroid6Text = "\n\nCurrent SDK Newer Than Android 6: location.isFromMockProvider(): ";
 
+        int infoTextCount = infoText.length();
         int isMockSettingsOlderThanAndroid6TextCount = isMockSettingsOlderThanAndroid6Text.length();
         int isMockSettingsOlderThanAndroid6BoolCount = String.valueOf(isMockSettingsOlderThanAndroid6).length();
         int isMockSettingsOlderThanAndroid6TextCountTotal = isMockSettingsOlderThanAndroid6TextCount + isMockSettingsOlderThanAndroid6BoolCount;
@@ -175,15 +187,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         int isMockSettingsNewerThanAndroid6BoolCount = String.valueOf(isMockSettingsNewerThanAndroid6).length();
         int isMockSettingsNewerThanAndroid6TextCountTotal = isMockSettingsNewerThanAndroid6TextCount + isMockSettingsNewerThanAndroid6BoolCount;
 
+        int isMockSettingsNewerThanAndroid6Color;
+        if(isMockSettingsNewerThanAndroid6) {isMockSettingsNewerThanAndroid6Color = Color.RED;} else {isMockSettingsNewerThanAndroid6Color = Color.GREEN;}
+
         SpannableString string = new SpannableString(
+            infoText +
             isMockSettingsOlderThanAndroid6Text + isMockSettingsOlderThanAndroid6 +
             isMockSettingsNewerThanAndroid6Text + isMockSettingsNewerThanAndroid6);
-        string.setSpan(new ForegroundColorSpan(Color.BLUE), isMockSettingsOlderThanAndroid6TextCount, isMockSettingsOlderThanAndroid6TextCount + isMockSettingsOlderThanAndroid6BoolCount, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
-        string.setSpan(new ForegroundColorSpan(Color.BLUE), isMockSettingsOlderThanAndroid6TextCountTotal+isMockSettingsNewerThanAndroid6TextCount, isMockSettingsOlderThanAndroid6TextCountTotal+isMockSettingsNewerThanAndroid6TextCount+isMockSettingsNewerThanAndroid6BoolCount, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        string.setSpan(new ForegroundColorSpan(Color.GRAY), infoTextCount + isMockSettingsOlderThanAndroid6TextCount, infoTextCount + isMockSettingsOlderThanAndroid6TextCount + isMockSettingsOlderThanAndroid6BoolCount, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        string.setSpan(new ForegroundColorSpan(isMockSettingsNewerThanAndroid6Color), infoTextCount + isMockSettingsOlderThanAndroid6TextCountTotal + isMockSettingsNewerThanAndroid6TextCount, infoTextCount + isMockSettingsOlderThanAndroid6TextCountTotal + isMockSettingsNewerThanAndroid6TextCount + isMockSettingsNewerThanAndroid6BoolCount, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        //dialogBuilder.setMessage(
-        //        "Current SDK Older Than Android 6: ALLOW_MOCK_LOCATION Setting: " + isMockSettingsOlderThanAndroid6 +
-        //        "\n\nCurrent SDK Newer Than Android 6: location.isFromMockProvider(): " + isMockSettingsNewerThanAndroid6);
         dialogBuilder.setMessage(string);
         dialogBuilder.setNegativeButton(getString(R.string.alert_dialog_close), new DialogInterface.OnClickListener() {
             @Override
@@ -219,13 +232,29 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && location != null && isFromMockProvider;
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d(TAG, "GPS LocationChanged");
-        double lat = location.getLatitude();
-        double lng = location.getLongitude();
-        Log.d(TAG, "Received GPS request for " + String.valueOf(lat) + "," + String.valueOf(lng));
-    }
+    /**
+     * Location Listener
+     */
+    LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(android.location.Location location) {
+            Log.d(TAG, "GPS LocationChanged");
+            double lat = location.getLatitude();
+            double lng = location.getLongitude();
+            Log.d(TAG, "Received GPS request for " + String.valueOf(lat) + "," + String.valueOf(lng));
+            String msg = "LocationChanged: Latitude: "+ lat + "New Longitude: "+ lng;
+            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+    };
+
 
 
 
@@ -319,10 +348,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
      *
      * @param e Pass Exception object as parameter
      */
-    public void throwErrorDialog(Exception e) {
+    public void throwErrorDialog(String e) {
         new AlertDialog.Builder(this)
             .setTitle("Exception Thrown")
-            .setMessage(e.toString())
+            .setMessage(e)
             .setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -347,6 +376,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                 //Prompt the user once explanation has been shown
                                 ActivityCompat.requestPermissions(MainActivity.this,
                                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+                                //Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                //startActivity(intent);
                             }
                         }).create().show();
             } else {
