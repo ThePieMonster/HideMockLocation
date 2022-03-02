@@ -242,8 +242,8 @@ public class MainActivity extends AppCompatActivity {
             double lat = location.getLatitude();
             double lng = location.getLongitude();
             Log.d(TAG, "Received GPS request for " + String.valueOf(lat) + "," + String.valueOf(lng));
-            String msg = "LocationChanged: Latitude: "+ lat + "New Longitude: "+ lng;
-            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+            //String msg = "LocationChanged: Latitude: "+ lat + "New Longitude: "+ lng;
+            //Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
         }
 
         @Override

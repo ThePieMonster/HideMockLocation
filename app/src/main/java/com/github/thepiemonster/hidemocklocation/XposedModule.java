@@ -38,7 +38,8 @@ public class XposedModule implements IXposedHookZygoteInit, IXposedHookLoadPacka
         }
 
         boolean isHidingEnabled() {
-            Common.ListType listType = getListType();
+            return true;
+            /*Common.ListType listType = getListType();
             Set<String> apps = getAppList(listType);
 
             switch (listType) {
@@ -50,7 +51,7 @@ public class XposedModule implements IXposedHookZygoteInit, IXposedHookLoadPacka
                     if (!apps.contains(processName) && !apps.contains(packageName))
                         return true;
             }
-            return false;
+            return false;*/
         }
     }
 
