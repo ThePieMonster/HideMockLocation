@@ -1,6 +1,6 @@
 # Hide Mock Locations
 [![Release](https://img.shields.io/github/v/release/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation?label=Release)](https://github.com/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation/releases/latest)
-[![Stars](https://img.shields.io/github/stars/ThePieMonster/HideMockLocation?label=Stars)](https://github.com/ThePieMonster)
+[![Stars](https://img.shields.io/github/stars/ThePieMonster/HideMockLocation?label=Stars)](https://github.com/ThePieMonster/HideMockLocation)
 [![Download](https://img.shields.io/github/downloads/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation/total)](https://github.com/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation/releases/latest)
 [![GitHub license](https://img.shields.io/github/license/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation)](https://github.com/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation/blob/main/LICENSE)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ThePieMonster/HideMockLocation/Java%20CI%20with%20Gradle)](https://github.com/ThePieMonster/HideMockLocation/actions)
