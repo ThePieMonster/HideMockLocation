@@ -28,6 +28,11 @@ jobs:
         arguments: build
 
     - name : ls github.workspace
-      working-directory : ${{ github.workspace }}/app/build/outputs/apk
+      working-directory : ${{ github.workspace }}/app/build/outputs/apk/release
       run : "ls -la"
 
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: app-release.apk
+        path: ${{ github.workspace }}
