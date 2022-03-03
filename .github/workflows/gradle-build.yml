@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: Java CI with Gradle
+name: Gradle Build
 
 on:
   push:
@@ -26,3 +26,13 @@ jobs:
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
       with:
         arguments: build
+
+    - name : View Directory "/app/build/outputs/apk/release"
+      working-directory : ${{ github.workspace }}/app/build/outputs/apk/release
+      run : "ls -la"
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: HideMockLocation.apk
+        path: ${{ github.workspace }}/app/build/outputs/apk/release/app-release-unsigned.apk
