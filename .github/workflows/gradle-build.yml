@@ -17,17 +17,28 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+    
     - name: Set up JDK
       uses: actions/setup-java@v2
       with:
         java-version: '11'
         distribution: 'temurin'
+        
+    - name: Get Gradle VersionName
+      working-directory : ${{ github.workspace }}/app
+      run : "grep 'versionName' build.gradle | awk '{print $2}'"
+      
+    - name: Bump version
+      uses: chkfung/android-version-actions@v1.1
+      with:
+        gradlePath: app/build.gradle
+    
     - name: Build with Gradle
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
       with:
         arguments: build
 
-    - name : View Directory "/app/build/outputs/apk/release"
+    - name : View Build Directory
       working-directory : ${{ github.workspace }}/app/build/outputs/apk/release
       run : "ls -la"
 
