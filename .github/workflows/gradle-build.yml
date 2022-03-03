@@ -28,6 +28,6 @@ jobs:
         arguments: build
 
     - name : ls github.workspace
-      working-directory : ${{ github.workspace }}
+      working-directory : ${{ github.workspace }}/app/build/outputs/apk
       run : "ls -la"
 
