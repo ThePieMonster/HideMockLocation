@@ -31,9 +31,13 @@ jobs:
       working-directory : ${{ github.workspace }}/app
       run : |
         echo "Get Gradle VersionName"
-        echo "action_state=yellow" >> $GITHUB_ENV
-        echo "${{ env.action_state }}"
-        grep 'versionName' build.gradle | awk '{print $2}'
+        echo "versionName=grep 'versionName' build.gradle | awk '{print $2}'" >> $GITHUB_ENV
+        
+    - name: Output Gradle VersionName
+      working-directory : ${{ github.workspace }}/app
+      run : |
+        echo "Output Gradle VersionName"
+        echo "${{ env.versionName }}"
       
     - name: Build with Gradle
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
