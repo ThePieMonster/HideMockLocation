@@ -27,12 +27,12 @@ jobs:
       with:
         arguments: build
 
-    - name : ls github.workspace
+    - name : View Directory "/app/build/outputs/apk/release"
       working-directory : ${{ github.workspace }}/app/build/outputs/apk/release
       run : "ls -la"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: app-release.apk
-        path: ${{ github.workspace }}
+        name: HideMockLocation.apk
+        path: ${{ github.workspace }}/app/build/outputs/apk/release/app-release-unsigned.apk
