@@ -32,7 +32,6 @@ jobs:
         workflow: gradle-build.yml
         workflow_conclusion: success
         pr: ${{github.event.pull_request.number}}
-        commit: ${{github.event.pull_request.head.sha}}
         branch: master
         path: ${{ github.workspace }}}/app/artifact
         # Optional, defaults to current repo
