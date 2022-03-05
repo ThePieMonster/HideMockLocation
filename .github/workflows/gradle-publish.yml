@@ -21,12 +21,30 @@ jobs:
     
     steps:
     - run: |
-        echo PR #${{ github.event.number }} has been merged
+        echo "PR #${{ github.event.number }} has been merged"
 
-    - name: Download a Build Artifact
-      uses: actions/download-artifact@v3.0.0
+    - name: Download Artifact
+      uses: dawidd6/action-download-artifact@v2
       with:
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        workflow: gradle-build.yml
+        workflow_conclusion: success
+        pr: ${{github.event.pull_request.number}}
+        commit: ${{github.event.pull_request.head.sha}}
+        branch: master
         path: ${{ github.workspace }}}/app/artifact
+        # Optional, defaults to current repo
+        repo: ${{github.repository}}
+        # Optional, check the workflow run whether it has an artifact
+        # then will get the last available artifact from previous workflow
+        # default false, just try to download from the last one
+        check_artifacts:  false
+        # Optional, search for the last workflow run whose stored an artifact named as in `name` input
+        # default false
+        search_artifacts: false
+
+
+
 
     - name: Output Gradle VersionName
       working-directory : ${{ github.workspace }}/app/artifact
