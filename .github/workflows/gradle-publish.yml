@@ -4,9 +4,11 @@
 name: Gradle Publish
 
 on:
-  pull_request:
+  push:
     branches: [ main ]
-    types: [ closed ]    
+#  pull_request:
+#    branches: [ main ]
+#    types: [ closed ]    
 #  release:
 #    types: [created]
 
