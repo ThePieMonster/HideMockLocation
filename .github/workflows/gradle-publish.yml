@@ -4,38 +4,36 @@
 name: Gradle Package
 
 on:
-  release:
-    types: [created]
+  pull_request:
+    branches: [ main ]
+    types: [ closed ]    
+#  release:
+#    types: [created]
 
 jobs:
-  build:
-
+  merge_job:
+    # this job will only run if the PR has been merged
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-
+    
     steps:
-#   - uses: actions/checkout@v2
-#   - name: Set up JDK 11
-#     uses: actions/setup-java@v2
-#     with:
-#       java-version: '11'
-#       distribution: 'temurin'
-#       server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-#       settings-path: ${{ github.workspace }} # location for the settings.xml file
+    - run: |
+        echo PR #${{ github.event.number }} has been merged
 
-#   - name: Build with Gradle
-#     uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
-#     with:
-#       arguments: build
-        
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.0
       with:
-        name: HideMockLocation.apk
         path: ${{ github.workspace }}}/app/artifact
 
+    - name: Output Gradle VersionName
+      working-directory : ${{ github.workspace }}/app/artifact
+      run : |
+        echo "Output Gradle VersionName"
+        echo "${{env.VERSIONNAME}}"
+      
     - name: Changelog
       uses: scottbrenner/generate-changelog-action@master
       id: Changelog
@@ -55,4 +53,11 @@ jobs:
           ${{ steps.Changelog.outputs.changelog }}
         draft: false
         prerelease: false
-
+  
+  close_job:
+    # this job will only run if the PR has been closed without being merged
+    if: github.event.pull_request.merged == false
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo PR #${{ github.event.number }} has been closed without being merged
