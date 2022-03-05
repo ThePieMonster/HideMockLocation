@@ -1,0 +1,50 @@
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Gradle Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        
+    - name: Get Gradle VersionName
+      working-directory : ${{github.workspace}}/app
+      run : |
+        echo "Get Gradle VersionName"
+        echo "VERSIONNAME=$(grep 'versionName' build.gradle | awk '{print $2}')" | tr -d '"' >> $GITHUB_ENV
+  
+    - name: Output Gradle VersionName
+      run : |
+        echo "Output Gradle VersionName"
+        echo "${{env.VERSIONNAME}}"
+      
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
+      with:
+        arguments: build
+
+    - name : View Build Directory
+      working-directory : ${{github.workspace}}/app/build/outputs/apk/release
+      run : "ls -la"
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: HideMockLocation-${{env.VERSIONNAME}}.apk
+        path: ${{github.workspace}}/app/build/outputs/apk/release/app-release-unsigned.apk

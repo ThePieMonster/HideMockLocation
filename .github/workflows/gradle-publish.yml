@@ -1,0 +1,63 @@
+# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
+
+name: Gradle Publish
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [ closed ]    
+#  release:
+#    types: [created]
+
+jobs:
+  merge_completed:
+    # this job will only run if the PR has been merged
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    
+    steps:
+    - run: |
+        echo PR #${{ github.event.number }} has been merged
+
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v3.0.0
+      with:
+        path: ${{ github.workspace }}}/app/artifact
+
+    - name: Output Gradle VersionName
+      working-directory : ${{ github.workspace }}/app/artifact
+      run : |
+        echo "Output Gradle VersionName"
+        echo "${{env.VERSIONNAME}}"
+      
+    - name: Changelog
+      uses: scottbrenner/generate-changelog-action@master
+      id: Changelog
+      env:
+        REPO: ${{ github.repository }}
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        artifacts: HideMockLocation.apk
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+        body: |
+          ${{ steps.Changelog.outputs.changelog }}
+        draft: false
+        prerelease: false
+  
+  merge_closed:
+    # this job will only run if the PR has been closed without being merged
+    if: github.event.pull_request.merged == false
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo PR #${{ github.event.number }} has been closed without being merged
