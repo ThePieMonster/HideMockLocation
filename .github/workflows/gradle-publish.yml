@@ -22,6 +22,7 @@ jobs:
       packages: write
     
     steps:
+    - name: Display PR Number
     - run: |
         echo "PR #${{ github.event.number }} has been merged"
 
