@@ -148,8 +148,8 @@ jobs:
       id: create_release_xposed
       uses: softprops/action-gh-release@v1
       with:
+        name: ${{ env.VERSIONNAME }}
         tag_name: ${{ env.VERSIONNAME }}
-        release_name: ${{ env.VERSIONNAME }}
         body_path: ${{ steps.Changelog.outputs.changelog }}
       env:
         GITHUB_REPOSITORY: Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation
