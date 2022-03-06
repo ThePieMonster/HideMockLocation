@@ -6,6 +6,7 @@ name: Gradle
 on:
   pull_request:
     branches: [ main ]
+    types: [opened, closed, reopened, synchronize]
 
 env:
   APP_NAME: HideMockLocation
