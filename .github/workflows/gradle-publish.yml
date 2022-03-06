@@ -4,10 +4,14 @@
 name: Gradle Publish
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_run:
+    workflows: ["Gradle Build"]
+    types:
+      - completed
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
 #    types: [ closed ]    
 #  release:
 #    types: [created]
