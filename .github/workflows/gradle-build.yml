@@ -12,6 +12,8 @@ on:
 env:
   APP_NAME: HideMockLocation
 
+permissions: write-all
+
 jobs:
   build:
     runs-on: ubuntu-latest
