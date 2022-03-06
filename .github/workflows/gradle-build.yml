@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: Gradle Build
+name: Gradle
 
 on:
   push:
@@ -33,6 +33,7 @@ jobs:
       run : |
         echo "Output Gradle VersionName"
         echo "${{env.VERSIONNAME}}"
+        exit 1
       
     - name: Build with Gradle
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
@@ -48,3 +49,18 @@ jobs:
       with:
         name: HideMockLocation-${{env.VERSIONNAME}}.apk
         path: ${{github.workspace}}/app/build/outputs/apk/release/app-release-unsigned.apk
+
+  build-success:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ needs.build.result == 'success' }}
+    steps:
+      - run: echo "Build success"
+  
+  build-failure:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ needs.build.result == 'failure' }}
+    steps:
+      - run: echo "Build failure"
+  
