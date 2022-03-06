@@ -20,7 +20,7 @@ jobs:
     
     steps:
     - name: Display PR Number
-    - run: |
+      run: |
         echo "PR #${{ github.event.number }} has been merged"
 
     - name: Download Artifact
