@@ -11,6 +11,7 @@ on:
 
 env:
   APP_NAME: HideMockLocation
+  VERSIONNAME: 0
 
 jobs:
   build:
@@ -66,6 +67,7 @@ jobs:
       run : |
         echo "Output Gradle VersionName"
         echo "${{env.VERSIONNAME}}"
+        exit 1
 
 #    - name: Download Artifact
 #      uses: actions/download-artifact@v3.0.0
