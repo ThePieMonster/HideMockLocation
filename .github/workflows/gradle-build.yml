@@ -78,7 +78,7 @@ jobs:
 
   merge_completed:
     needs: build
-    if: github.event.pull_request.merged == true
+#    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     
     steps:
