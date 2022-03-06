@@ -8,6 +8,8 @@ on:
     branches: [ main ]
     types: [opened, closed, reopened, synchronize]
 
+permissions: write-all
+
 env:
   APP_NAME: HideMockLocation
 
