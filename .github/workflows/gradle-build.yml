@@ -146,7 +146,7 @@ jobs:
 
     - name: Create Release - Xposed Repo
       id: create_release_xposed
-      uses: ncipollo/release-action@v1.9
+      uses: ncipollo/release-action@v1
       with:
         name: ${{ env.VERSIONNAME }}
         tag: ${{ env.VERSIONNAME }}
