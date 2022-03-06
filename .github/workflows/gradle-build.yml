@@ -152,6 +152,7 @@ jobs:
         tag: ${{ env.VERSIONNAME }}
         body: ${{ steps.Changelog.outputs.changelog }}
         token: ${{ secrets.GITHUB_TOKEN }}
+        repo: Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation
 
     - name: Upload Release Artifact - Xposed Repo
       uses: actions/upload-release-asset@v1
