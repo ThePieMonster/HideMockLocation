@@ -12,6 +12,8 @@ Xposed Repo
 [![Download](https://img.shields.io/github/downloads/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation/total)](https://github.com/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation/releases/latest)
 
 ## Summary
+![Logo](app/src/main/res/mipmap-xhdpi/ic_launcher.png)
+
 Hide Mock Location is an Xposed Module (now LSPosed on Android 11), which hides information about the 'Allow mock locations' setting.
 
 ## Usage
