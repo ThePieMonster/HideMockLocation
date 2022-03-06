@@ -19,11 +19,9 @@ jobs:
     steps:
     - name: Input Check
       run: |
-        echo "github.event.pull_request.merged : $MERGED_RAW"
-        echo "github.event.number : $NUMBER_RAW"
-      env:
-        MERGED_RAW: ${{ github.event.pull_request.merged }}
-        NUMBER_RAW: ${{ github.event.number }}
+        echo "github.event_name : ${{ github.event_name }}"
+        echo "github.event.pull_request.merged : ${{ github.event.pull_request.merged }}"
+        echo "github.event.number : ${{ github.event.number }}"
 
     - name: Checkout code
       uses: actions/checkout@v2
