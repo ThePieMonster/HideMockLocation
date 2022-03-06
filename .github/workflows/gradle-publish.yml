@@ -5,7 +5,8 @@ name: Gradle Publish
 
 on:
   workflow_run:
-    workflows: ["Gradle Build"]
+    workflows: [ "Gradle Build" ]
+    branches: [ main ]
     types:
       - completed
 #  push:
@@ -21,17 +22,16 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - run: echo 'The triggering workflow passed'
+      - run: echo "The triggering workflow passed"
   
   on-failure:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
-      - run: echo 'The triggering workflow failed'
+      - run: echo "The triggering workflow failed"
   
   merge_completed:
     needs: on-success
-    # this job will only run if the PR has been merged
     #if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     
@@ -47,7 +47,6 @@ jobs:
         workflow: gradle-build.yml
         workflow_conclusion: success
         pr: ${{github.event.pull_request.number}}
-        branch: master
         path: ${{ github.workspace }}}/app/artifact
         # Optional, defaults to current repo
         repo: ${{github.repository}}
@@ -87,10 +86,10 @@ jobs:
   
   merge_closed:
     needs: on-success
-    # this job will only run if the PR has been closed without being merged
     if: github.event.pull_request.merged == false
     runs-on: ubuntu-latest
     
     steps:
-    - run: |
-        echo PR #${{ github.event.number }} has been closed without being merged
+    - name: PR Closed Without Merge
+      run: |
+        echo "PR #${{ github.event.number }} has been closed without being merged"
