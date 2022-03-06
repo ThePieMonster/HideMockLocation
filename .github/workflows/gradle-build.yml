@@ -9,6 +9,9 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  APP_NAME: HideMockLocation
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,7 +36,6 @@ jobs:
       run : |
         echo "Output Gradle VersionName"
         echo "${{env.VERSIONNAME}}"
-        exit 1
       
     - name: Build with Gradle
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
@@ -47,20 +49,51 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: HideMockLocation-${{env.VERSIONNAME}}.apk
+        name: ${{env.APP_NAME}}-${{env.VERSIONNAME}}.apk
         path: ${{github.workspace}}/app/build/outputs/apk/release/app-release-unsigned.apk
 
-  build-success:
+  merge_completed:
     needs: build
+    #if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    if: ${{ needs.build.result == 'success' }}
+    
     steps:
-      - run: echo "Build success"
+    - name: Display PR Number
+      run: |
+        echo "PR #${{ github.event.number }} has been merged"
+
+#    - name: Download Artifact
+#      uses: actions/download-artifact@v3.0.0
+#      with:
+#        name: ${{env.APP_NAME}}-${{env.VERSIONNAME}}.apk
+#        path: ${{ github.workspace }}/app/artifact
+      
+    - name: Changelog
+      uses: scottbrenner/generate-changelog-action@master
+      id: Changelog
+      env:
+        REPO: ${{ github.repository }}
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        artifacts: ${{env.APP_NAME}}-${{env.VERSIONNAME}}.apk
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+        body: |
+          ${{ steps.Changelog.outputs.changelog }}
+        draft: false
+        prerelease: false
   
-  build-failure:
+  merge_closed:
     needs: build
+    if: github.event.pull_request.merged == false
     runs-on: ubuntu-latest
-    if: ${{ needs.build.result == 'failure' }}
+    
     steps:
-      - run: echo "Build failure"
-  
+    - name: PR Closed Without Merge
+      run: |
+        echo "PR #${{ github.event.number }} has been closed without being merged"
