@@ -4,9 +4,10 @@
 name: Gradle
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
+    branches: [ main ]
+    types: [opened, closed, reopened, synchronize]
+  push:
     branches: [ main ]
 
 env:
@@ -20,9 +21,10 @@ jobs:
     - name: Input Check
       run: |
         echo "github.event_name : ${{ github.event_name }}"
+        echo "github.event.action : ${{ github.event.action }}"
         echo "github.event.pull_request.merged : ${{ github.event.pull_request.merged }}"
         echo "github.event.number : ${{ github.event.number }}"
-
+        
     - name: Checkout code
       uses: actions/checkout@v2
     
