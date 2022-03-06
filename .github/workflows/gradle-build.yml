@@ -146,18 +146,18 @@ jobs:
 
     - name: Create Release - Xposed Repo
       id: create_release_xposed
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@latest
       with:
         name: ${{ env.VERSIONNAME }}
         tag: ${{ env.VERSIONNAME }}
         body: ${{ steps.Changelog.outputs.changelog }}
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.REPO_TOKEN }}
         repo: Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation
 
     - name: Upload Release Artifact - Xposed Repo
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_TOKEN: ${{ github.REPO_TOKEN }}
       with:
         upload_url: ${{ steps.create_release_xposed.outputs.upload_url }}
         asset_path: ${{ github.workspace }}/artifact/${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
