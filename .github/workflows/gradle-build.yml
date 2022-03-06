@@ -1,13 +1,16 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: Gradle Build
+name: Gradle
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
+env:
+  APP_NAME: HideMockLocation
 
 jobs:
   build:
@@ -24,7 +27,7 @@ jobs:
         distribution: 'temurin'
         
     - name: Get Gradle VersionName
-      working-directory : ${{github.workspace}}/app
+      working-directory : ${{ github.workspace }}/app
       run : |
         echo "Get Gradle VersionName"
         echo "VERSIONNAME=$(grep 'versionName' build.gradle | awk '{print $2}')" | tr -d '"' >> $GITHUB_ENV
@@ -32,7 +35,13 @@ jobs:
     - name: Output Gradle VersionName
       run : |
         echo "Output Gradle VersionName"
-        echo "${{env.VERSIONNAME}}"
+        echo "${{ env.VERSIONNAME }}"
+      
+    - name: Create Gradle VersionName TXT File
+      working-directory : ${{ github.workspace }}/app
+      run : |
+        echo "Create Gradle VersionName TXT File"
+        echo "${{ env.VERSIONNAME }}" > VersionName.txt
       
     - name: Build with Gradle
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
@@ -40,11 +49,101 @@ jobs:
         arguments: build
 
     - name : View Build Directory
-      working-directory : ${{github.workspace}}/app/build/outputs/apk/release
-      run : "ls -la"
+      working-directory : ${{ github.workspace }}/app/build/outputs/apk/release
+      run : |
+        echo "${{ github.workspace }}/app/build/outputs/apk/release"
+        ls -la
 
-    - name: Upload artifact
+    - name: Rename APK
+      working-directory : ${{ github.workspace }}/app/build/outputs/apk/release
+      run: mv app-release-unsigned.apk ${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
+
+    - name: Upload Artifact APK
       uses: actions/upload-artifact@v2
       with:
-        name: HideMockLocation-${{env.VERSIONNAME}}.apk
-        path: ${{github.workspace}}/app/build/outputs/apk/release/app-release-unsigned.apk
+        name: ${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
+        path: ${{ github.workspace }}/app/build/outputs/apk/release/${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
+
+    - name: Upload Artifact VersionName
+      uses: actions/upload-artifact@v2
+      with:
+        name: VersionName.txt
+        path: ${{ github.workspace }}/app/VersionName.txt
+
+  merge_completed:
+    needs: build
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Display PR Number
+      run: |
+        echo "PR #${{ github.event.number }} has been merged"
+
+    - name: Download Artifact VersionName
+      uses: actions/download-artifact@v3.0.0
+      with:
+        name: VersionName.txt
+        path: ${{ github.workspace }}/artifact
+
+    - name: Read Gradle VersionName
+      working-directory : ${{ github.workspace }}/artifact
+      run : |
+        echo "Read Gradle VersionName"
+        echo "VERSIONNAME=$(cat VersionName.txt)" >> $GITHUB_ENV
+
+    - name: Output Gradle VersionName
+      run : |
+        echo "Output Gradle VersionName"
+        echo "${{ env.VERSIONNAME }}"
+
+    - name: Download Artifact APK
+      uses: actions/download-artifact@v3.0.0
+      with:
+        name: ${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
+        path: ${{ github.workspace }}/artifact
+      
+    - name : View Artifact Directory
+      working-directory : ${{ github.workspace }}/artifact
+      run : | 
+        echo "${{ github.workspace }}/artifact"
+        ls -la
+      
+    - name: Changelog
+      uses: scottbrenner/generate-changelog-action@master
+      id: Changelog
+      env:
+        REPO: ${{ github.repository }}
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.VERSIONNAME }}
+        release_name: ${{ env.VERSIONNAME }}
+        body: |
+          ${{ steps.Changelog.outputs.changelog }}
+        draft: false
+        prerelease: false
+  
+    - name: Upload Release Artifact
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ github.workspace }}/artifact/${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
+        asset_name: ${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
+        asset_content_type: application/gzip
+
+  merge_closed:
+    needs: build
+    if: github.event.pull_request.merged == false
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: PR Closed Without Merge
+      run: |
+        echo "PR #${{ github.event.number }} has been closed without being merged"
