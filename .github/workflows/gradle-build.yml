@@ -52,7 +52,9 @@ jobs:
 
     - name : View Build Directory
       working-directory : ${{ github.workspace }}/app/build/outputs/apk/release
-      run : ls -la
+      run : |
+        echo "${{ github.workspace }}/app/build/outputs/apk/release"
+        ls -la
 
     - name: Rename APK
       working-directory : ${{ github.workspace }}/app/build/outputs/apk/release
@@ -105,7 +107,9 @@ jobs:
       
     - name : View Artifact Directory
       working-directory : ${{ github.workspace }}/artifact
-      run : "ls -la"
+      run : | 
+        echo "${{ github.workspace }}/artifact"
+        ls -la
       
     - name: Changelog
       uses: scottbrenner/generate-changelog-action@master
@@ -132,7 +136,7 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ github.workspace }}/artifact
+        asset_path: ${{ github.workspace }}/artifact/${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
         asset_name: ${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
         asset_content_type: application/gzip
 
