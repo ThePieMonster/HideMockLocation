@@ -146,17 +146,13 @@ jobs:
 
     - name: Create Release - Xposed Repo
       id: create_release_xposed
-      uses: actions/create-release@latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
-        repo: Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation
         tag_name: ${{ env.VERSIONNAME }}
         release_name: ${{ env.VERSIONNAME }}
-        body: |
-          ${{ steps.Changelog.outputs.changelog }}
-        draft: false
-        prerelease: false
+        body_path: ${{ steps.Changelog.outputs.changelog }}
+      env:
+        GITHUB_REPOSITORY: Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation
 
     - name: Upload Release Artifact - Xposed Repo
       uses: actions/upload-release-asset@v1
