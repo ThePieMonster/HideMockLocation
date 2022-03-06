@@ -84,6 +84,7 @@ jobs:
       working-directory : ${{github.workspace}}/artifact
       run : |
         echo "Read Gradle VersionName"
+        cat VersionName.txt
         echo "VERSIONNAME=$(cat VersionName.txt >> $GITHUB_ENV
 
     - name: Output Gradle VersionName
