@@ -1,9 +1,18 @@
 # Hide Mock Locations
-[![Release](https://img.shields.io/github/v/release/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation?label=Release)](https://github.com/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation/releases/latest)
-[![Stars](https://img.shields.io/github/stars/ThePieMonster/HideMockLocation?label=Stars)](https://github.com/ThePieMonster/HideMockLocation)
-[![Download](https://img.shields.io/github/downloads/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation/total)](https://github.com/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation/releases/latest)
+Main Repo   
+
+[![Release](https://img.shields.io/github/v/release/ThePieMonster/HideMockLocation?label=Release)](https://github.com/ThePieMonster/HideMockLocation/releases/latest)
+[![Download](https://img.shields.io/github/downloads/ThePieMonster/HideMockLocation/total)](https://github.com/ThePieMonster/HideMockLocation/releases/latest)
 [![GitHub license](https://img.shields.io/github/license/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation)](https://github.com/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation/blob/main/LICENSE)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ThePieMonster/HideMockLocation/Java%20CI%20with%20Gradle)](https://github.com/ThePieMonster/HideMockLocation/actions)
+
+Xposed Repo 
+
+[![Release](https://img.shields.io/github/v/release/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation?label=Release)](https://github.com/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation/releases/latest)
+[![Download](https://img.shields.io/github/downloads/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation/total)](https://github.com/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation/releases/latest)
+
+## Summary
+![Logo](app/src/main/res/mipmap-xhdpi/ic_launcher.png)
 
 Hide Mock Location is an Xposed Module (now LSPosed on Android 11), which hides information about the 'Allow mock locations' setting.
 
