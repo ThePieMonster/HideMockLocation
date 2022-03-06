@@ -109,14 +109,23 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        artifacts: ${{env.APP_NAME}}-${{env.VERSIONNAME}}.apk
-        tag_name: ${{ github.ref }}
+        tag_name: ${{env.VERSIONNAME}}
         release_name: ${{env.VERSIONNAME}}
         body: |
           ${{ steps.Changelog.outputs.changelog }}
         draft: false
         prerelease: false
   
+    - name: Upload Release Artifact
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ github.workspace }}/artifact/${{env.APP_NAME}}-${{env.VERSIONNAME}}.apk
+        asset_name: ${{env.APP_NAME}}-${{env.VERSIONNAME}}.apk
+        asset_content_type: application/apk
+
   merge_closed:
     needs: build
     if: github.event.pull_request.merged == false
