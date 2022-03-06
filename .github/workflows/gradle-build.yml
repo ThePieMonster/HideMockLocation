@@ -90,7 +90,6 @@ jobs:
       run : |
         echo "Output Gradle VersionName"
         echo "${{env.VERSIONNAME}}"
-        exit 1
 
     - name: Download Artifact
       uses: actions/download-artifact@v3.0.0
