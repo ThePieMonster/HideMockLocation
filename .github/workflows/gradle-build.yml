@@ -11,7 +11,6 @@ on:
 
 env:
   APP_NAME: HideMockLocation
-  VERSIONNAME: 0
 
 jobs:
   build:
@@ -38,6 +37,12 @@ jobs:
         echo "Output Gradle VersionName"
         echo "${{env.VERSIONNAME}}"
       
+    - name: Create Gradle VersionName TXT File
+      working-directory : ${{github.workspace}}/app
+      run : |
+        echo "Create Gradle VersionName TXT File"
+        echo "${{env.VERSIONNAME}}" > VersionName.txt
+      
     - name: Build with Gradle
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
       with:
@@ -47,11 +52,17 @@ jobs:
       working-directory : ${{github.workspace}}/app/build/outputs/apk/release
       run : "ls -la"
 
-    - name: Upload artifact
+    - name: Upload Artifact APK
       uses: actions/upload-artifact@v2
       with:
         name: ${{env.APP_NAME}}-${{env.VERSIONNAME}}.apk
         path: ${{github.workspace}}/app/build/outputs/apk/release/app-release-unsigned.apk
+
+    - name: Upload Artifact VersionName
+      uses: actions/upload-artifact@v2
+      with:
+        name: VersionName.txt
+        path: ${{github.workspace}}/app/VersionName.txt
 
   merge_completed:
     needs: build
@@ -63,17 +74,29 @@ jobs:
       run: |
         echo "PR #${{ github.event.number }} has been merged"
 
+    - name: Download Artifact VersionName
+      uses: actions/download-artifact@v3.0.0
+      with:
+        name: VersionName.txt
+        path: ${{ github.workspace }}/artifact
+
+    - name: Read Gradle VersionName
+      working-directory : ${{github.workspace}}/artifact
+      run : |
+        echo "Read Gradle VersionName"
+        echo "VERSIONNAME=$(cat VersionName.txt >> $GITHUB_ENV
+
     - name: Output Gradle VersionName
       run : |
         echo "Output Gradle VersionName"
         echo "${{env.VERSIONNAME}}"
         exit 1
 
-#    - name: Download Artifact
-#      uses: actions/download-artifact@v3.0.0
-#      with:
-#        name: ${{env.APP_NAME}}-${{env.VERSIONNAME}}.apk
-#        path: ${{ github.workspace }}/app/artifact
+    - name: Download Artifact
+      uses: actions/download-artifact@v3.0.0
+      with:
+        name: ${{env.APP_NAME}}-${{env.VERSIONNAME}}.apk
+        path: ${{ github.workspace }}/artifact
       
     - name: Changelog
       uses: scottbrenner/generate-changelog-action@master
