@@ -17,6 +17,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Input Check
+      run: |
+        echo "github.event.pull_request.merged           : $MERGED_RAW"
+      env:
+        MERGED_RAW: ${{ github.event.pull_request.merged }}
+
     - name: Checkout code
       uses: actions/checkout@v2
     
