@@ -4,8 +4,12 @@
 name: Gradle Publish
 
 on:
-  push:
-    branches: [ main ]
+  workflow_run:
+    workflows: ["Gradle Build"]
+    types:
+      - completed
+#  push:
+#    branches: [ main ]
 #  pull_request:
 #    branches: [ main ]
 #    types: [ closed ]    
@@ -13,17 +17,27 @@ on:
 #    types: [created]
 
 jobs:
+  on-success:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - run: echo 'The triggering workflow passed'
+  
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo 'The triggering workflow failed'
+  
   merge_completed:
+    needs: on-success
     # this job will only run if the PR has been merged
     #if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     
     steps:
     - name: Display PR Number
-    - run: |
+      run: |
         echo "PR #${{ github.event.number }} has been merged"
 
     - name: Download Artifact
@@ -44,9 +58,6 @@ jobs:
         # Optional, search for the last workflow run whose stored an artifact named as in `name` input
         # default false
         search_artifacts: false
-
-
-
 
     - name: Output Gradle VersionName
       working-directory : ${{ github.workspace }}/app/artifact
@@ -75,9 +86,11 @@ jobs:
         prerelease: false
   
   merge_closed:
+    needs: on-success
     # this job will only run if the PR has been closed without being merged
     if: github.event.pull_request.merged == false
     runs-on: ubuntu-latest
+    
     steps:
     - run: |
         echo PR #${{ github.event.number }} has been closed without being merged
