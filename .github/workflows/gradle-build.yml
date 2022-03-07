@@ -153,19 +153,20 @@ jobs:
         name: ${{ env.VERSIONNAME }}
         tag: ${{ env.VERSIONNAME }}
         body: ${{ steps.Changelog.outputs.changelog }}
+        artifacts: ${{ github.workspace }}/artifact/${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
         token: ${{ secrets.REPO_TOKEN }}
         owner: Xposed-Modules-Repo
         repo: com.github.thepiemonster.hidemocklocation
 
-    - name: Upload Release Artifact - Xposed Repo
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ github.REPO_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release_xposed.outputs.upload_url }}
-        asset_path: ${{ github.workspace }}/artifact/${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
-        asset_name: ${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
-        asset_content_type: application/gzip
+#    - name: Upload Release Artifact - Xposed Repo
+#      uses: actions/upload-release-asset@v1
+#      env:
+#        GITHUB_TOKEN: ${{ github.REPO_TOKEN }}
+#      with:
+#        upload_url: ${{ steps.create_release_xposed.outputs.upload_url }}
+#        asset_path: ${{ github.workspace }}/artifact/${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
+#        asset_name: ${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
+#        asset_content_type: application/gzip
 
   merge_closed:
     needs: build
