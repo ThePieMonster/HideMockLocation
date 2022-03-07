@@ -8,6 +8,8 @@ on:
     branches: [ main ]
     types: [opened, closed, reopened, synchronize]
 
+permissions: write-all
+
 env:
   APP_NAME: HideMockLocation
 
@@ -133,7 +135,7 @@ jobs:
           ${{ steps.Changelog.outputs.changelog }}
         draft: false
         prerelease: false
-  
+ 
     - name: Upload Release Artifact
       uses: actions/upload-release-asset@v1
       env:
@@ -143,6 +145,18 @@ jobs:
         asset_path: ${{ github.workspace }}/artifact/${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
         asset_name: ${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
         asset_content_type: application/gzip
+
+    - name: Create Release - Xposed Repo
+      id: create_release_xposed
+      uses: ncipollo/release-action@v1
+      with:
+        name: ${{ env.VERSIONNAME }}
+        tag: ${{ env.VERSIONNAME }}
+        body: ${{ steps.Changelog.outputs.changelog }}
+        artifacts: ${{ github.workspace }}/artifact/${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
+        token: ${{ secrets.REPO_TOKEN }}
+        owner: Xposed-Modules-Repo
+        repo: com.github.thepiemonster.hidemocklocation
 
   merge_closed:
     needs: build
