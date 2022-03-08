@@ -52,10 +52,8 @@ jobs:
         echo "${{ env.VERSIONNAME }}" > VersionName.txt
       
     - name: Changelog
-      uses: scottbrenner/generate-changelog-action@master
+      uses: mikepenz/release-changelog-builder-action@v1
       id: Changelog
-      env:
-        REPO: ${{ github.repository }}
       
     - name: Output Changelog
       run : |
