@@ -96,6 +96,12 @@ jobs:
         name: VersionName.txt
         path: ${{ github.workspace }}/app/VersionName.txt
 
+    - name: Upload Artifact Changelog
+      uses: actions/upload-artifact@v2
+      with:
+        name: Changelog.txt
+        path: ${{ github.workspace }}/app/Changelog.txt
+
   merge_completed:
     needs: build
     if: github.event.pull_request.merged == true
