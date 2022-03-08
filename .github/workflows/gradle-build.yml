@@ -22,11 +22,14 @@ jobs:
       run: |
         echo "github.event_name : ${{ github.event_name }}"
         echo "github.event.action : ${{ github.event.action }}"
+        echo "github.ref : ${{ github.ref }}"
         echo "github.event.pull_request.merged : ${{ github.event.pull_request.merged }}"
         echo "github.event.number : ${{ github.event.number }}"
         
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     
     - name: Set up JDK
       uses: actions/setup-java@v2
@@ -51,11 +54,23 @@ jobs:
         echo "Create Gradle VersionName TXT File"
         echo "${{ env.VERSIONNAME }}" > VersionName.txt
       
-    - name: Changelog
-      uses: scottbrenner/generate-changelog-action@master
+    - name: Create tag
+      uses: actions/github-script@v5
+      with:
+        script: |
+          github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'refs/tags/${{ env.VERSIONNAME }}',
+            sha: context.sha
+          })
+      
+    - name: Get Changelog
+      uses: mikepenz/release-changelog-builder-action@v2
       id: Changelog
       env:
-        REPO: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          toTag: ${{ env.VERSIONNAME }}
       
     - name: Output Changelog
       run : |
