@@ -54,6 +54,8 @@ jobs:
     - name: Changelog
       uses: mikepenz/release-changelog-builder-action@v1
       id: Changelog
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
     - name: Output Changelog
       run : |
