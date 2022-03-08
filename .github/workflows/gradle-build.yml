@@ -52,10 +52,9 @@ jobs:
         echo "${{ env.VERSIONNAME }}" > VersionName.txt
       
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@v2
+      uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
       with:
         arguments: build
-        gradle-version: 7.1.2
 
     - name : View Build Directory
       working-directory : ${{ github.workspace }}/app/build/outputs/apk/release
