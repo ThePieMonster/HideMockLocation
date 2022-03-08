@@ -66,7 +66,7 @@ jobs:
           })
       
     - name: Get Changelog
-      uses: mikepenz/release-changelog-builder-action@{latest-release}
+      uses: mikepenz/release-changelog-builder-action@v2
       id: Changelog
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
