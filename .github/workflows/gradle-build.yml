@@ -51,6 +51,23 @@ jobs:
         echo "Create Gradle VersionName TXT File"
         echo "${{ env.VERSIONNAME }}" > VersionName.txt
       
+    - name: Changelog
+      uses: scottbrenner/generate-changelog-action@master
+      id: Changelog
+      env:
+        REPO: ${{ github.repository }}
+      
+    - name: Output Changelog
+      run : |
+        echo "Output Changelog"
+        echo "${{ steps.Changelog.outputs.changelog }}"
+      
+    - name: Create Changelog TXT File
+      working-directory : ${{ github.workspace }}/app
+      run : |
+        echo "Create Changelog TXT File"
+        echo "${{ steps.Changelog.outputs.changelog }}" > Changelog.txt
+      
     - name: Build with Gradle
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
       with:
@@ -79,6 +96,12 @@ jobs:
         name: VersionName.txt
         path: ${{ github.workspace }}/app/VersionName.txt
 
+    - name: Upload Artifact Changelog
+      uses: actions/upload-artifact@v2
+      with:
+        name: Changelog.txt
+        path: ${{ github.workspace }}/app/Changelog.txt
+
   merge_completed:
     needs: build
     if: github.event.pull_request.merged == true
@@ -106,6 +129,23 @@ jobs:
         echo "Output Gradle VersionName"
         echo "${{ env.VERSIONNAME }}"
 
+    - name: Download Artifact Changelog
+      uses: actions/download-artifact@v3.0.0
+      with:
+        name: Changelog.txt
+        path: ${{ github.workspace }}/artifact
+
+    - name: Read Changelog
+      working-directory : ${{ github.workspace }}/artifact
+      run : |
+        echo "Read Changelog"
+        echo "CHANGELOG=$(cat Changelog.txt)" >> $GITHUB_ENV
+
+    - name: Output Changelog
+      run : |
+        echo "Output Changelog"
+        echo "${{ env.CHANGELOG }}"
+
     - name: Download Artifact APK
       uses: actions/download-artifact@v3.0.0
       with:
@@ -118,12 +158,6 @@ jobs:
         echo "${{ github.workspace }}/artifact"
         ls -la
       
-    - name: Changelog
-      uses: scottbrenner/generate-changelog-action@master
-      id: Changelog
-      env:
-        REPO: ${{ github.repository }}
-
     - name: Create Release
       id: create_release
       uses: actions/create-release@latest
@@ -133,7 +167,7 @@ jobs:
         tag_name: ${{ env.VERSIONNAME }}
         release_name: ${{ env.VERSIONNAME }}
         body: |
-          ${{ steps.Changelog.outputs.changelog }}
+          ${{ env.CHANGELOG }}
         draft: false
         prerelease: false
  
@@ -153,7 +187,7 @@ jobs:
       with:
         name: ${{ env.VERSIONNAME }}
         tag: ${{ env.VERSIONNAME }}
-        body: ${{ steps.Changelog.outputs.changelog }}
+        body: ${{ env.CHANGELOG }}
         artifacts: ${{ github.workspace }}/artifact/${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
         token: ${{ secrets.REPO_TOKEN }}
         owner: Xposed-Modules-Repo
