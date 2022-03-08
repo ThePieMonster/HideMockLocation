@@ -57,7 +57,7 @@ jobs:
       id: Changelog
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          toTag: ${{ env.VERSIONNAME }}
+          fromTag: 2.0.0
       
     - name: Output Changelog
       run : |
