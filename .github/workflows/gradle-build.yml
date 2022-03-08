@@ -54,7 +54,18 @@ jobs:
         echo "Create Gradle VersionName TXT File"
         echo "${{ env.VERSIONNAME }}" > VersionName.txt
       
-    - name: Changelog
+    - name: Create tag
+      uses: actions/github-script@v5
+      with:
+        script: |
+          github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'refs/tags/${{ env.VERSIONNAME }}',
+            sha: context.sha
+          })
+      
+    - name: Get Changelog
       uses: mikepenz/release-changelog-builder-action@v1
       id: Changelog
       env:
