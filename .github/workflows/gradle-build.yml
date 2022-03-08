@@ -57,6 +57,11 @@ jobs:
       env:
         REPO: ${{ github.repository }}
       
+    - name: Output Changelog
+      run : |
+        echo "Output Changelog"
+        echo "${{ steps.Changelog.outputs.changelog }}"
+      
     - name: Create Changelog TXT File
       working-directory : ${{ github.workspace }}/app
       run : |
@@ -156,7 +161,7 @@ jobs:
         tag_name: ${{ env.VERSIONNAME }}
         release_name: ${{ env.VERSIONNAME }}
         body: |
-          ${{ steps.Changelog.outputs.changelog }}
+          ${{ env.CHANGELOG }}
         draft: false
         prerelease: false
  
@@ -176,7 +181,7 @@ jobs:
       with:
         name: ${{ env.VERSIONNAME }}
         tag: ${{ env.VERSIONNAME }}
-        body: ${{ steps.Changelog.outputs.changelog }}
+        body: ${{ env.CHANGELOG }}
         artifacts: ${{ github.workspace }}/artifact/${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
         token: ${{ secrets.REPO_TOKEN }}
         owner: Xposed-Modules-Repo
