@@ -25,7 +25,14 @@ jobs:
         echo "github.ref : ${{ github.ref }}"
         echo "github.event.pull_request.merged : ${{ github.event.pull_request.merged }}"
         echo "github.event.number : ${{ github.event.number }}"
-        
+
+    - name: Check Labels
+      uses: yogevbd/enforce-label-action@2.2.2
+      with:
+        REQUIRED_LABELS_ANY: "bug,documentation,enhancement"
+        REQUIRED_LABELS_ANY_DESCRIPTION: "Select at least one label ['bug','documentation','enhancement']"
+        BANNED_LABELS: "banned"
+
     - name: Checkout code
       uses: actions/checkout@v2
       with:
