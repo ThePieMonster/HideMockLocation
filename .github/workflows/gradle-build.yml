@@ -98,9 +98,10 @@ jobs:
     - name: Execute Gradle build
       run: ./gradlew build
       env:
-        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
         SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-
+        SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        
 #    - name: Build with Gradle
 #      uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
 #      with:
