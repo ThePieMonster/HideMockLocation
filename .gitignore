@@ -104,3 +104,4 @@ fabric.properties
 
 # Misc
 *.zip
+/app/release/*
