@@ -22,17 +22,20 @@ jobs:
       run: |
         echo "github.event_name : ${{ github.event_name }}"
         echo "github.event.action : ${{ github.event.action }}"
+        echo "github.ref : ${{ github.ref }}"
         echo "github.event.pull_request.merged : ${{ github.event.pull_request.merged }}"
         echo "github.event.number : ${{ github.event.number }}"
         
     - name: Checkout code
       uses: actions/checkout@v2
-    
-    - name: Set up JDK
-      uses: actions/setup-java@v2
       with:
-        java-version: '11'
-        distribution: 'temurin'
+        fetch-depth: 0
+
+#    - name: Set up JDK
+#      uses: actions/setup-java@v2
+#      with:
+#        java-version: '11'
+#        distribution: 'temurin'
         
     - name: Get Gradle VersionName
       working-directory : ${{ github.workspace }}/app
@@ -51,11 +54,32 @@ jobs:
         echo "Create Gradle VersionName TXT File"
         echo "${{ env.VERSIONNAME }}" > VersionName.txt
       
-    - name: Changelog
-      uses: scottbrenner/generate-changelog-action@master
+    - name: Check If Current Tag Already Exists 
+      uses: mukunku/tag-exists-action@v1.0.0
+      id: checkTag
+      with: 
+        tag: ${{ env.VERSIONNAME }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create Tag
+      if: steps.checkTag.outputs.exists == false
+      uses: actions/github-script@v5
+      with:
+        script: |
+          github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'refs/tags/${{ env.VERSIONNAME }}',
+            sha: context.sha
+          })
+      
+    - name: Get Changelog
+      uses: mikepenz/release-changelog-builder-action@v2
       id: Changelog
       env:
-        REPO: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          toTag: ${{ env.VERSIONNAME }}
       
     - name: Output Changelog
       run : |
@@ -68,11 +92,17 @@ jobs:
         echo "Create Changelog TXT File"
         echo "${{ steps.Changelog.outputs.changelog }}" > Changelog.txt
       
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
-      with:
-        arguments: build
-        cache-disabled: true
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+    
+    - name: Execute Gradle build
+      run: ./gradlew build
+
+#    - name: Build with Gradle
+#      uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
+#      with:
+#        arguments: build
+#        cache-disabled: true
 
     - name : View Build Directory
       working-directory : ${{ github.workspace }}/app/build/outputs/apk/release
