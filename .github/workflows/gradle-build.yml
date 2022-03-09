@@ -81,7 +81,7 @@ jobs:
         if [[ "${{ env.TAGCHECK }}" == "false" ]] ; then echo "Hello!" ; else echo "Goodbye!" ; fi
 
     - name: Create Tag
-      if: ${{ ${{ env.TAGCHECK }} == "false" }} }}
+      if: ( {{ env.TAGCHECK }} == "false" )
       uses: actions/github-script@v5
       with:
         script: |
