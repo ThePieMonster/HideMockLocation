@@ -20,10 +20,10 @@ android {
 
             if (allFilesFromDir != null) {
                 def keystoreFile = allFilesFromDir.first()
-                keystoreFile.renameTo("keystore/HideMockLocations-Key.jks")
+                keystoreFile.renameTo("keystore/HideMockLocation-Key.jks")
             }
 
-            storeFile = file("keystore/HideMockLocations-Key.jks")
+            storeFile = file("keystore/HideMockLocation-Key.jks")
             storePassword System.getenv("SIGNING_STORE_PASSWORD")
             keyAlias System.getenv("SIGNING_KEY_ALIAS")
             keyPassword System.getenv("SIGNING_KEY_PASSWORD")
