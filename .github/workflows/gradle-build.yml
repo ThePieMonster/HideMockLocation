@@ -30,7 +30,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    
+
 #    - name: Set up JDK
 #      uses: actions/setup-java@v2
 #      with:
@@ -54,7 +54,7 @@ jobs:
         echo "Create Gradle VersionName TXT File"
         echo "${{ env.VERSIONNAME }}" > VersionName.txt
       
-    - name: Check if ${{ env.VERSIONNAME }} tag already exists 
+    - name: Check If Current Tag Already Exists 
       uses: mukunku/tag-exists-action@v1.0.0
       id: checkTag
       with: 
@@ -62,7 +62,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Create tag
+    - name: Create Tag
       if: steps.checkTag.outputs.exists == false
       uses: actions/github-script@v5
       with:
