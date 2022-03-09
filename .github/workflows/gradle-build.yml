@@ -61,8 +61,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - if: ${{ steps.checkTag.outputs.exists }} == format('false')
-      name: Create tag
+    - run: echo ${{ steps.checkTag.outputs.exists }}
+
+    - name: Create tag
+      if: ${{ steps.checkTag.outputs.exists }} == format('false')
       uses: actions/github-script@v5
       with:
         script: |
