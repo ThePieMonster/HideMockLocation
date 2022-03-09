@@ -223,7 +223,7 @@ jobs:
         owner: Xposed-Modules-Repo
         repo: com.github.thepiemonster.hidemocklocation
 
-  merge_closed:
+  merge_incomplete:
     needs: build
     if: github.event.pull_request.merged == false
     runs-on: ubuntu-latest
