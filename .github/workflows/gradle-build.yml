@@ -89,9 +89,11 @@ jobs:
     - name: Get Changelog
       uses: mikepenz/release-changelog-builder-action@v2
       id: Changelog
+      with:
+          configuration: ".github/configs/configuration.json"
+          #toTag: ${{ env.VERSIONNAME }}
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          toTag: ${{ env.VERSIONNAME }}
       
     - name: Output Changelog
       run : |
