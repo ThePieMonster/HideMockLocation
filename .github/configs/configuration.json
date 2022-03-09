@@ -2,11 +2,11 @@
     "categories": [
         {
             "title": "## 🚀 Features",
-            "labels": ["feature"]
+            "labels": ["feature", "enhancement"]
         },
         {
             "title": "## 🐛 Fixes",
-            "labels": ["fix"]
+            "labels": ["fix", "bug"]
         },
         {
             "title": "## 🧪 Tests",
@@ -14,7 +14,7 @@
         },
 		{
             "title": "## 💬 Other",
-            "labels": ["other"]
+            "labels": ["other", "documentation"]
         },
         {
             "title": "## 📦 Dependencies",
