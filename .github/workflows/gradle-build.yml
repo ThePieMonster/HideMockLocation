@@ -54,7 +54,15 @@ jobs:
         echo "Create Gradle VersionName TXT File"
         echo "${{ env.VERSIONNAME }}" > VersionName.txt
       
+    - uses: mukunku/tag-exists-action@v1.0.0
+      id: checkTag
+      with: 
+        tag: ${{ env.VERSIONNAME }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Create tag
+      if: (!${{ steps.checkTag.outputs.exists }})
       uses: actions/github-script@v5
       with:
         script: |
