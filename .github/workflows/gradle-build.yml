@@ -75,7 +75,7 @@ jobs:
         echo "TAGCHECK=${{ steps.checkTag.outputs.exists }}" >> $GITHUB_ENV
 
     - name: Create Tag
-      if: ${{ env.TAGCHECK }} == true
+      if: ${{ env.TAGCHECK }} == "false"
       uses: actions/github-script@v5
       with:
         script: |
