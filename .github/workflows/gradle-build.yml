@@ -31,11 +31,11 @@ jobs:
       with:
         fetch-depth: 0
     
-    - name: Set up JDK
-      uses: actions/setup-java@v2
-      with:
-        java-version: '11'
-        distribution: 'temurin'
+#    - name: Set up JDK
+#      uses: actions/setup-java@v2
+#      with:
+#        java-version: '11'
+#        distribution: 'temurin'
         
     - name: Get Gradle VersionName
       working-directory : ${{ github.workspace }}/app
@@ -83,11 +83,17 @@ jobs:
         echo "Create Changelog TXT File"
         echo "${{ steps.Changelog.outputs.changelog }}" > Changelog.txt
       
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
-      with:
-        arguments: build
-        cache-disabled: true
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+    
+    - name: Execute Gradle build
+      run: ./gradlew build
+
+#    - name: Build with Gradle
+#      uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
+#      with:
+#        arguments: build
+#        cache-disabled: true
 
     - name : View Build Directory
       working-directory : ${{ github.workspace }}/app/build/outputs/apk/release
