@@ -91,7 +91,6 @@ jobs:
       id: Changelog
       with:
           configuration: ".github/configs/configuration.json"
-          #toTag: ${{ env.VERSIONNAME }}
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
