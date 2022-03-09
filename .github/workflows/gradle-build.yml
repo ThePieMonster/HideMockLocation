@@ -77,6 +77,8 @@ jobs:
     - run: |
         if [[ ${{ env.TAGCHECK }} == "true" ]] ; then echo "Hello!" ; else echo "Goodbye!" ; fi
         if [[ "${{ env.TAGCHECK }}" == "true" ]] ; then echo "Hello!" ; else echo "Goodbye!" ; fi
+        if [[ ${{ env.TAGCHECK }} == "false" ]] ; then echo "Hello!" ; else echo "Goodbye!" ; fi
+        if [[ "${{ env.TAGCHECK }}" == "false" ]] ; then echo "Hello!" ; else echo "Goodbye!" ; fi
 
     - name: Create Tag
       if: ${{ env.TAGCHECK }} == "false"
