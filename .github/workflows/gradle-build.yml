@@ -95,6 +95,9 @@ jobs:
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
     
+    - name: Make Gradlew Executable
+      run: chmod +x ./gradlew
+    
     - name: Execute Gradle build
       run: ./gradlew build
       env:
@@ -116,9 +119,6 @@ jobs:
         echo ""
         echo "${{ github.workspace }}/app/build/outputs/apk/release"
         ls -la ${{ github.workspace }}/app/build/outputs/apk/release
-        echo ""
-        echo "${{ github.workspace }}/app/release"
-        ls -la ${{ github.workspace }}/app/release
 
     - name: Rename APK
       working-directory : ${{ github.workspace }}/app/build/outputs/apk/release
