@@ -25,7 +25,14 @@ jobs:
         echo "github.ref : ${{ github.ref }}"
         echo "github.event.pull_request.merged : ${{ github.event.pull_request.merged }}"
         echo "github.event.number : ${{ github.event.number }}"
-        
+
+    - name: Check Labels
+      uses: yogevbd/enforce-label-action@2.2.2
+      with:
+        REQUIRED_LABELS_ANY: "bug,documentation,enhancement"
+        REQUIRED_LABELS_ANY_DESCRIPTION: "Select at least one label ['bug','documentation','enhancement']"
+        BANNED_LABELS: "banned"
+
     - name: Checkout code
       uses: actions/checkout@v2
       with:
@@ -62,8 +69,13 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Output Tag Check 
+      run: |
+        echo "Tag Check: ${{ steps.checkTag.outputs.exists }}"
+        echo "TAGCHECK=${{ steps.checkTag.outputs.exists }}" >> $GITHUB_ENV
+
     - name: Create Tag
-      if: steps.checkTag.outputs.exists == false
+      if: env.TAGCHECK == format('false')
       uses: actions/github-script@v5
       with:
         script: |
@@ -77,9 +89,10 @@ jobs:
     - name: Get Changelog
       uses: mikepenz/release-changelog-builder-action@v2
       id: Changelog
+      with:
+          configuration: ".github/configs/configuration.json"
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          toTag: ${{ env.VERSIONNAME }}
       
     - name: Output Changelog
       run : |
@@ -92,12 +105,28 @@ jobs:
         echo "Create Changelog TXT File"
         echo "${{ steps.Changelog.outputs.changelog }}" > Changelog.txt
       
+    - name: Decode Keystore
+      id: decode_keystore
+      uses: timheuer/base64-to-file@v1
+      with:
+        fileName: 'keystore/HideMockLocation.jks'
+        encodedString: ${{ secrets.SIGNING_STORE_PASSWORD }}
+
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
+      with:
+        cache-disabled: true
+    
+    - name: Make Gradlew Executable
+      run: chmod +x ./gradlew
     
     - name: Execute Gradle build
       run: ./gradlew build
-
+      env:
+        SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+        SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        
 #    - name: Build with Gradle
 #      uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
 #      with:
@@ -105,14 +134,17 @@ jobs:
 #        cache-disabled: true
 
     - name : View Build Directory
-      working-directory : ${{ github.workspace }}/app/build/outputs/apk/release
+      working-directory : ${{ github.workspace }}
       run : |
+        echo "${{ github.workspace }}/app/build/outputs/apk/debug"
+        ls -la ${{ github.workspace }}/app/build/outputs/apk/debug
+        echo ""
         echo "${{ github.workspace }}/app/build/outputs/apk/release"
-        ls -la
+        ls -la ${{ github.workspace }}/app/build/outputs/apk/release
 
     - name: Rename APK
       working-directory : ${{ github.workspace }}/app/build/outputs/apk/release
-      run: mv app-release-unsigned.apk ${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
+      run: mv *.apk ${{ env.APP_NAME }}-${{ env.VERSIONNAME }}.apk
 
     - name: Upload Artifact APK
       uses: actions/upload-artifact@v2
@@ -223,7 +255,7 @@ jobs:
         owner: Xposed-Modules-Repo
         repo: com.github.thepiemonster.hidemocklocation
 
-  merge_closed:
+  merge_incomplete:
     needs: build
     if: github.event.pull_request.merged == false
     runs-on: ubuntu-latest

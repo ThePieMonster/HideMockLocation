@@ -42,7 +42,7 @@ captures/
 .idea/libraries
 
 # Keystore files
-*.jks
+#*.jks
 
 ### Android Patch ###
 gen-external-apklibs
@@ -104,3 +104,4 @@ fabric.properties
 
 # Misc
 *.zip
+/app/release/*
