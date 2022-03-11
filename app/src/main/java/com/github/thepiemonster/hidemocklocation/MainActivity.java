@@ -82,8 +82,29 @@ public class MainActivity extends AppCompatActivity {
         // Go to activity_main layout
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
-        //Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        //setSupportActionBar(myToolbar);
+        /*
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        // Display application icon in the toolbar
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.app_icon);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+        // assigning ID of textView2 to a variable
+        textView = (TextView) findViewById(R.id.textView2);
+
+
+        // "on click" operations to be performed
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+            // incrementing the value of textView
+            public void onClick( View view ) {
+                count++;
+                textView.setText("" + count);
+            }
+        });*/
+
         binding = ActivityMainBinding.inflate(getLayoutInflater()); // inflating our xml layout in our activity main binding
         setModuleState(binding);
         binding.menuDetectionTest.setOnClickListener(new View.OnClickListener() {
