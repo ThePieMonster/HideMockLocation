@@ -28,7 +28,11 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -78,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
         // Go to activity_main layout
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
+        //Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        //setSupportActionBar(myToolbar);
         binding = ActivityMainBinding.inflate(getLayoutInflater()); // inflating our xml layout in our activity main binding
         setModuleState(binding);
         binding.menuDetectionTest.setOnClickListener(new View.OnClickListener() {
@@ -198,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
         string.setSpan(new ForegroundColorSpan(isMockSettingsNewerThanAndroid6Color), infoTextCount + isMockSettingsOlderThanAndroid6TextCountTotal + isMockSettingsNewerThanAndroid6TextCount, infoTextCount + isMockSettingsOlderThanAndroid6TextCountTotal + isMockSettingsNewerThanAndroid6TextCount + isMockSettingsNewerThanAndroid6BoolCount, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         dialogBuilder.setMessage(string);
-        dialogBuilder.setNegativeButton(getString(R.string.alert_dialog_close), new DialogInterface.OnClickListener() {
+        dialogBuilder.setPositiveButton(getString(R.string.alert_dialog_close), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
             }
@@ -255,9 +261,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
-
-
 /*
     @OnCheckedChanged(R.id.list_type)
     public void changeListType(boolean isChecked) {
@@ -295,30 +298,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_menu, menu);
-
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        // Resize searchView
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                adapter.filter(query);
-                searchView.clearFocus();
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.filter(newText);
-                return true;
-            }
-        });
         return true;
     }
 
@@ -337,11 +322,7 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-        return true;
-    }
-*/
-
-
+    }*/
 
     /**
      * Creates an alert dialog window with the supplied exception message
@@ -398,19 +379,21 @@ public class MainActivity extends AppCompatActivity {
     private void setModuleState(ActivityMainBinding binding) {
         if (isModuleEnabled()) {
             binding.moduleStatusCard.setCardBackgroundColor(getColor(R.color.purple_500));
-            binding.moduleStatusIcon.setImageDrawable(AppCompatResources.getDrawable(this,
-                    R.drawable.baseline_check_circle_24));
+            //binding.moduleStatusCard.setBackgroundTintList(this.getColorStateList(R.color.purple_500));
+            binding.moduleStatusIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.baseline_check_circle_24));
             binding.moduleStatusText.setText(getString(R.string.card_title_activated));
             binding.serviceStatusText.setText(getString(R.string.card_detail_activated));
             binding.serveTimes.setText(getString(R.string.card_serve_time));
         } else {
             binding.moduleStatusCard.setCardBackgroundColor(getColor(R.color.red_500));
-            binding.moduleStatusIcon.setImageDrawable(AppCompatResources.getDrawable(this,
-                    R.drawable.baseline_error_24));
+            //binding.moduleStatusCard.setBackgroundTintList(this.getColorStateList(R.color.red_500));
+            binding.moduleStatusIcon.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.baseline_error_24));
             binding.moduleStatusText.setText(getText(R.string.card_title_not_activated));
             binding.serviceStatusText.setText(getText(R.string.card_detail_not_activated));
             binding.serveTimes.setVisibility(View.GONE);
         }
+        binding.menuDetectionTest.setCardBackgroundColor(getColor(R.color.softGray));
+        binding.menuAbout.setCardBackgroundColor(getColor(R.color.softGray));
     }
 
     /**

@@ -3,7 +3,6 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#ff80ab</color>
-    <color name="colorDark">#757575</color>
     <color name="preference_accent">@color/colorAccent</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
@@ -14,4 +13,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="softWhite">#EEEEEE</color>
+    <color name="softBlack">#121212</color>
+    <color name="softDarkGray1">#212121</color>
+    <color name="softDarkGray2">#1D1D1D</color>
+    <color name="softGray">#424242</color>
+    <color name="darkWhite">#B1B1B1</color>
 </resources>

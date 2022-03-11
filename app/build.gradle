@@ -53,16 +53,12 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //testImplementation 'junit:junit:4.12'
-
     compileOnly 'de.robv.android.xposed:api:82'
     compileOnly 'de.robv.android.xposed:api:82:sources'
-
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'com.google.gms:google-services:4.3.10'
-
     implementation 'com.google.android.material:material:1.5.0-alpha02'
-
+    implementation 'com.google.gms:google-services:4.3.10'
     implementation 'com.drakeet.about:about:2.5.0'
     implementation 'com.drakeet.multitype:multitype:4.3.0'
     //implementation 'com.takisoft.fix:preference-v7:24.1.1.0'
