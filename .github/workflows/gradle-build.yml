@@ -43,7 +43,15 @@ jobs:
 #      with:
 #        java-version: '11'
 #        distribution: 'temurin'
-        
+    
+    - name: Get Latest Release Tag
+      working-directory : ${{ github.workspace }}/app
+      run : |
+        echo "Get Latest Release Tag"
+        $LATESTRELEASETAG = curl -s https://api.github.com/repos/thepiemonster/hidemocklocation/releases/latest | grep "tag_name" | grep -oP '"tag_name": "\K[^"]+'
+        echo "$LATESTRELEASETAG"
+        echo "LATESTRELEASETAG=$LATESTRELEASETAG" >> $GITHUB_ENV
+    
     - name: Get Gradle VersionName
       working-directory : ${{ github.workspace }}/app
       run : |
