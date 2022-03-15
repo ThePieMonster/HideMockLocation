@@ -56,8 +56,9 @@ jobs:
       working-directory : ${{ github.workspace }}/app
       run : |
         echo "Get Gradle VersionName"
-        VERSIONNAME=$(grep 'versionName' build.gradle | awk '{print $2}')
-        echo "VERSIONNAME=$VERSIONNAME >> $GITHUB_ENV
+        VERSIONNAME=$(grep 'versionName' build.gradle)
+        #| awk '{print $2}') | tr -d '"'
+        echo "VERSIONNAME=$VERSIONNAME" >> $GITHUB_ENV
   
     - name: Output Gradle VersionName
       run : |
