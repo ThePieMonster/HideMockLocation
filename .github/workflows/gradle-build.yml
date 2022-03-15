@@ -56,7 +56,7 @@ jobs:
       working-directory : ${{ github.workspace }}/app
       run : |
         echo "Get Gradle VersionName"
-        VERSIONNAME=$(grep 'versionName' build.gradle | awk '{print $2}') | tr -d '"'
+        VERSIONNAME=$(grep 'versionName' build.gradle | awk '{print $2}')
         echo "VERSIONNAME=$VERSIONNAME >> $GITHUB_ENV
   
     - name: Output Gradle VersionName
@@ -70,11 +70,10 @@ jobs:
         echo "Create Gradle VersionName TXT File"
         echo "${{ env.VERSIONNAME }}" > VersionName.txt
 
-
-
-
-
-
+    - name: x
+      working-directory : ${{ github.workspace }}/app
+      run : |
+        echo ""
 
     - name: Check If Current Tag Already Exists 
       uses: mukunku/tag-exists-action@v1.0.0
