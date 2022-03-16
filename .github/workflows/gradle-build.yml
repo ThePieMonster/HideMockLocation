@@ -73,7 +73,7 @@ jobs:
         LATESTRELEASETAG=${{ env.LATESTRELEASETAG }}
         echo "Gradle Version Name: $VERSIONNAME"
         echo "Latest Release Tag: $LATESTRELEASETAG"
-        if [$VERSIONNAME = $LATESTRELEASETAG]; then echo "1"; else echo "0"; fi
+        if [ "$VERSIONNAME" = "$LATESTRELEASETAG" ]; then echo "1"; else echo "0"; fi
         
     - name: Check If Current Tag Already Exists 
       uses: mukunku/tag-exists-action@v1.0.0
