@@ -69,9 +69,11 @@ jobs:
     - name: Check If Current Tag Equals Latest Release
       working-directory : ${{ github.workspace }}/app
       run : |
-        echo "Gradle Version Name: ${{ env.VERSIONNAME }}"
-        echo "Latest Release Tag: ${{ env.LATESTRELEASETAG }}"
-        if [${{ env.VERSIONNAME }} == ${{ env.LATESTRELEASETAG }}]; then echo "1"; else echo "0"; fi
+        VERSIONNAME=${{ env.VERSIONNAME }}
+        LATESTRELEASETAG=${{ env.LATESTRELEASETAG }}
+        echo "Gradle Version Name: $VERSIONNAME"
+        echo "Latest Release Tag: $LATESTRELEASETAG"
+        if [$VERSIONNAME -eq $LATESTRELEASETAG]; then echo "1"; else echo "0"; fi
         
     - name: Check If Current Tag Already Exists 
       uses: mukunku/tag-exists-action@v1.0.0
