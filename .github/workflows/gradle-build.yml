@@ -73,7 +73,7 @@ jobs:
         LATESTRELEASETAG=${{ env.LATESTRELEASETAG }}
         echo "Gradle Version Name: $VERSIONNAME"
         echo "Latest Release Tag: $LATESTRELEASETAG"
-        if [ "$VERSIONNAME" = "$LATESTRELEASETAG" ]; then echo "Current Gradle Version is the same as GitHubs latest Release tag. This is a tagging conflict and can be resolved by updating the build.gradle file."; exit 0; else echo "All clear!"; fi
+        if [ "$VERSIONNAME" = "$LATESTRELEASETAG" ]; then echo "Current Gradle Version is the same as GitHubs latest Release tag. This is a tagging conflict and can be resolved by updating the build.gradle file."; exit 1; else echo "All clear!"; fi
       
     - name: Check If Current Tag Already Exists 
       uses: mukunku/tag-exists-action@v1.0.0
