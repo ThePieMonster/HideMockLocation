@@ -57,6 +57,7 @@ jobs:
       run : |
         echo "Get Gradle VersionName"
         VERSIONNAME=$(grep 'versionName' build.gradle | awk '{print $2}' | tr -d '"')
+        echo "$VERSIONNAME"
         echo "VERSIONNAME=$VERSIONNAME" >> $GITHUB_ENV
   
     - name: Create Gradle VersionName TXT File
@@ -70,6 +71,7 @@ jobs:
       run : |
         echo "Gradle Version Name: ${{ env.VERSIONNAME }}"
         echo "Latest Release Tag: ${{ env.LATESTRELEASETAG }}"
+        if [ ${{ env.VERSIONNAME }} -eq ${{ env.LATESTRELEASETAG }} ]; then echo "1"; else echo "0"; fi
         
     - name: Check If Current Tag Already Exists 
       uses: mukunku/tag-exists-action@v1.0.0
