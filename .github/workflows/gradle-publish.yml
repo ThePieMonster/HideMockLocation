@@ -5,7 +5,7 @@ name: GitHub Release
 
 on:
   workflow_run:
-    workflows: ["Gradle Build"]
+    workflows: ["Gradle Build XXX"]
     types:
       - completed
 
