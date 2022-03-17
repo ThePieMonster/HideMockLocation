@@ -9,8 +9,8 @@ android {
         applicationId "com.github.thepiemonster.hidemocklocation"
         minSdk 30
         targetSdk 30
-        versionCode 208
-        versionName "2.0.8"
+        versionCode 209
+        versionName "2.0.9"
     }
 
     signingConfigs {
