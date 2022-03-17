@@ -142,6 +142,11 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
     - name: Display PR Number
       run: |
         echo "PR #${{ github.event.number }} has been merged"
@@ -206,7 +211,7 @@ jobs:
       uses: mikepenz/release-changelog-builder-action@v2
       id: Changelog
       with:
-          configuration: ".github/configs/configuration.json"
+          configuration: "/.github/configs/configuration.json"
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
