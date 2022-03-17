@@ -79,33 +79,8 @@ jobs:
         LATESTRELEASETAG=${{ env.LATESTRELEASETAG }}
         echo "Gradle Version Name: $VERSIONNAME"
         echo "Latest Release Tag: $LATESTRELEASETAG"
-        if [ "$VERSIONNAME" = "$LATESTRELEASETAG" ]; then echo "Current Gradle Version is the same as GitHubs latest Release tag. This is a tagging conflict and can be resolved by updating the build.gradle file."; exit 1; else echo "All clear!"; fi
-      
-#    - name: Check If Current Tag Already Exists 
-#      uses: mukunku/tag-exists-action@v1.0.0
-#      id: checkTag
-#      with: 
-#        tag: ${{ env.VERSIONNAME }}
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#
-#    - name: Output Tag Check 
-#      run: |
-#        echo "Tag Check: ${{ steps.checkTag.outputs.exists }}"
-#        echo "TAGCHECK=${{ steps.checkTag.outputs.exists }}" >> $GITHUB_ENV
-#
-#    - name: Create Tag
-#      if: env.TAGCHECK == format('false')
-#      uses: actions/github-script@v5
-#      with:
-#        script: |
-#          github.rest.git.createRef({
-#            owner: context.repo.owner,
-#            repo: context.repo.repo,
-#            ref: 'refs/tags/${{ env.VERSIONNAME }}',
-#            sha: context.sha
-#          })
-      
+        if [ "$VERSIONNAME" = "$LATESTRELEASETAG" ]; then echo "Current Gradle Version is the same as GitHubs latest Release tag. This will create a tagging conflict when PR is merged due to every PR creating a release. This can be resolved by updating the build.gradle file."; exit 1; else echo "All clear!"; fi
+           
     - name: Decode Keystore
       id: decode_keystore
       uses: timheuer/base64-to-file@v1
@@ -159,11 +134,7 @@ jobs:
         name: VersionName.txt
         path: ${{ github.workspace }}/app/VersionName.txt
 
-#    - name: Upload Artifact Changelog
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: Changelog.txt
-#        path: ${{ github.workspace }}/app/Changelog.txt
+
 
   merge_completed:
     needs: build
@@ -174,20 +145,7 @@ jobs:
     - name: Display PR Number
       run: |
         echo "PR #${{ github.event.number }} has been merged"
-
-    - name: Get Changelog
-      uses: mikepenz/release-changelog-builder-action@v2
-      id: Changelog
-      with:
-          configuration: ".github/configs/configuration.json"
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-    - name: Output Changelog
-      run : |
-        echo "Output Changelog"
-        echo "${{ steps.Changelog.outputs.changelog }}"
-     
+    
     - name: Download Artifact VersionName
       uses: actions/download-artifact@v3.0.0
       with:
@@ -199,23 +157,7 @@ jobs:
       run : |
         echo "Read Gradle VersionName"
         echo "VERSIONNAME=$(cat VersionName.txt)" >> $GITHUB_ENV
-
-#    - name: Download Artifact Changelog
-#      uses: actions/download-artifact@v3.0.0
-#      with:
-#        name: Changelog.txt
-#        path: ${{ github.workspace }}/artifact
-
-#    - name: Read Changelog
-#      working-directory : ${{ github.workspace }}/artifact
-#      run : |
-#        echo "Read Changelog"
-#        echo "CHANGELOG=$(cat Changelog.txt)" >> $GITHUB_ENV
-
-#    - name: Output Changelog
-#      run : |
-#        echo "Output Changelog"
-#        echo "${{ env.CHANGELOG }}"
+        echo "$VERSIONNAME"
 
     - name: Download Artifact APK
       uses: actions/download-artifact@v3.0.0
@@ -228,6 +170,50 @@ jobs:
       run : | 
         echo "${{ github.workspace }}/artifact"
         ls -la
+
+    - name: Check If Current VersionName Exists As Tag 
+      uses: mukunku/tag-exists-action@v1.0.0
+      id: checkTag
+      with: 
+        tag: ${{ env.VERSIONNAME }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Output Tag Check 
+      run: |
+        echo "Tag Check: ${{ steps.checkTag.outputs.exists }}"
+        echo "TAGCHECK=${{ steps.checkTag.outputs.exists }}" >> $GITHUB_ENV 
+        
+    - name: Tag Exists
+      if: env.TAGCHECK == format('true')
+      run: |
+        echo "Current VersionName Exists As Tag"
+        exit 1
+        
+    - name: Create Tag
+      if: env.TAGCHECK == format('false')
+      uses: actions/github-script@v5
+      with:
+        script: |
+          github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'refs/tags/${{ env.VERSIONNAME }}',
+            sha: context.sha
+          })
+      
+    - name: Get Changelog
+      uses: mikepenz/release-changelog-builder-action@v2
+      id: Changelog
+      with:
+          configuration: ".github/configs/configuration.json"
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+    - name: Output Changelog
+      run : |
+        echo "Output Changelog"
+        echo "${{ steps.Changelog.outputs.changelog }}"
       
     - name: Create Release
       id: create_release
@@ -237,8 +223,7 @@ jobs:
       with:
         tag_name: ${{ env.VERSIONNAME }}
         release_name: ${{ env.VERSIONNAME }}
-        body: |
-          ${{ env.CHANGELOG }}
+        body: ${{ steps.Changelog.outputs.changelog }}
         draft: false
         prerelease: false
  
@@ -263,6 +248,8 @@ jobs:
         token: ${{ secrets.REPO_TOKEN }}
         owner: Xposed-Modules-Repo
         repo: com.github.thepiemonster.hidemocklocation
+
+
 
   merge_incomplete:
     needs: build
