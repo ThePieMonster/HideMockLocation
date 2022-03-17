@@ -4,23 +4,30 @@
 name: GitHub Release
 
 on:
-  release:
-    types: [created]
+  workflow_run:
+    workflows: ["Gradle Build"]
+    types:
+      - completed
+
+permissions: write-all
 
 jobs:
-  release:
-
+  release_on_build_success:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 11
-      uses: actions/setup-java@v2
+    - name: Checkout Code
+      uses: actions/checkout@v2
       with:
-        java-version: '11'
-        distribution: 'temurin'
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
+        fetch-depth: 0
+    
+
+  release_on_build_failed:
+    if: ${{ github.event.workflow_run.conclusion != 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Notice 
+      run: |
+        echo "The 'Gradle Build' workflow failed."
