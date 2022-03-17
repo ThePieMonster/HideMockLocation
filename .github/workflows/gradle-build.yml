@@ -26,6 +26,14 @@ jobs:
         echo "github.event.pull_request.merged : ${{ github.event.pull_request.merged }}"
         echo "github.event.number : ${{ github.event.number }}"
 
+    - name: Get Changelog
+      uses: mikepenz/release-changelog-builder-action@v2
+      id: Changelog
+      with:
+          configuration: "/.github/configs/configuration.json"
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Check Labels
       uses: yogevbd/enforce-label-action@2.2.2
       with:
@@ -206,7 +214,7 @@ jobs:
       uses: mikepenz/release-changelog-builder-action@v2
       id: Changelog
       with:
-          configuration: ".github/configs/configuration.json"
+          configuration: "/.github/configs/configuration.json"
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
