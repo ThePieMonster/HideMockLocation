@@ -6,7 +6,7 @@ name: Gradle
 on:
   pull_request:
     branches: [ main ]
-    types: [opened, closed, reopened, synchronize, edited]
+    types: [opened, closed, reopened, synchronize]
 
 permissions: write-all
 
@@ -43,37 +43,23 @@ jobs:
 #      with:
 #        java-version: '11'
 #        distribution: 'temurin'
-    
-    - name: Get Latest Release Tag
-      working-directory : ${{ github.workspace }}/app
-      run : |
-        echo "Get Latest Release Tag"
-        LATESTRELEASETAG=$(curl -s https://api.github.com/repos/thepiemonster/hidemocklocation/releases/latest | grep "tag_name" | grep -oP '"tag_name": "\K[^"]+')
-        echo "$LATESTRELEASETAG"
-        echo "LATESTRELEASETAG=$LATESTRELEASETAG" >> $GITHUB_ENV
-    
+        
     - name: Get Gradle VersionName
       working-directory : ${{ github.workspace }}/app
       run : |
         echo "Get Gradle VersionName"
-        VERSIONNAME=$(grep 'versionName' build.gradle | awk '{print $2}' | tr -d '"')
-        echo "$VERSIONNAME"
-        echo "VERSIONNAME=$VERSIONNAME" >> $GITHUB_ENV
+        echo "VERSIONNAME=$(grep 'versionName' build.gradle | awk '{print $2}')" | tr -d '"' >> $GITHUB_ENV
   
+    - name: Output Gradle VersionName
+      run : |
+        echo "Output Gradle VersionName"
+        echo "${{ env.VERSIONNAME }}"
+      
     - name: Create Gradle VersionName TXT File
       working-directory : ${{ github.workspace }}/app
       run : |
         echo "Create Gradle VersionName TXT File"
         echo "${{ env.VERSIONNAME }}" > VersionName.txt
-
-    - name: Check If Current Tag Equals Latest Release
-      working-directory : ${{ github.workspace }}/app
-      run : |
-        VERSIONNAME=${{ env.VERSIONNAME }}
-        LATESTRELEASETAG=${{ env.LATESTRELEASETAG }}
-        echo "Gradle Version Name: $VERSIONNAME"
-        echo "Latest Release Tag: $LATESTRELEASETAG"
-        if [ "$VERSIONNAME" = "$LATESTRELEASETAG" ]; then echo "Current Gradle Version is the same as GitHubs latest Release tag. This is a tagging conflict and can be resolved by updating the build.gradle file."; exit 1; else echo "All clear!"; fi
       
     - name: Check If Current Tag Already Exists 
       uses: mukunku/tag-exists-action@v1.0.0
