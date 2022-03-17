@@ -52,6 +52,12 @@ jobs:
         echo "$LATESTRELEASETAG"
         echo "LATESTRELEASETAG=$LATESTRELEASETAG" >> $GITHUB_ENV
     
+    - name: Create Latest Release TXT File
+      working-directory : ${{ github.workspace }}/app
+      run : |
+        echo "Create Latest Release TXT File"
+        echo "${{ env.LATESTRELEASETAG }}" > LatestReleaseTag.txt
+    
     - name: Get Gradle VersionName
       working-directory : ${{ github.workspace }}/app
       run : |
@@ -66,7 +72,7 @@ jobs:
         echo "Create Gradle VersionName TXT File"
         echo "${{ env.VERSIONNAME }}" > VersionName.txt
 
-    - name: Check If Current Tag Equals Latest Release
+    - name: Check If Gradle Version Equals Latest Release Tag
       working-directory : ${{ github.workspace }}/app
       run : |
         VERSIONNAME=${{ env.VERSIONNAME }}
@@ -75,30 +81,30 @@ jobs:
         echo "Latest Release Tag: $LATESTRELEASETAG"
         if [ "$VERSIONNAME" = "$LATESTRELEASETAG" ]; then echo "Current Gradle Version is the same as GitHubs latest Release tag. This is a tagging conflict and can be resolved by updating the build.gradle file."; exit 1; else echo "All clear!"; fi
       
-    - name: Check If Current Tag Already Exists 
-      uses: mukunku/tag-exists-action@v1.0.0
-      id: checkTag
-      with: 
-        tag: ${{ env.VERSIONNAME }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Output Tag Check 
-      run: |
-        echo "Tag Check: ${{ steps.checkTag.outputs.exists }}"
-        echo "TAGCHECK=${{ steps.checkTag.outputs.exists }}" >> $GITHUB_ENV
-
-    - name: Create Tag
-      if: env.TAGCHECK == format('false')
-      uses: actions/github-script@v5
-      with:
-        script: |
-          github.rest.git.createRef({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            ref: 'refs/tags/${{ env.VERSIONNAME }}',
-            sha: context.sha
-          })
+#    - name: Check If Current Tag Already Exists 
+#      uses: mukunku/tag-exists-action@v1.0.0
+#      id: checkTag
+#      with: 
+#        tag: ${{ env.VERSIONNAME }}
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+#    - name: Output Tag Check 
+#      run: |
+#        echo "Tag Check: ${{ steps.checkTag.outputs.exists }}"
+#        echo "TAGCHECK=${{ steps.checkTag.outputs.exists }}" >> $GITHUB_ENV
+#
+#    - name: Create Tag
+#      if: env.TAGCHECK == format('false')
+#      uses: actions/github-script@v5
+#      with:
+#        script: |
+#          github.rest.git.createRef({
+#            owner: context.repo.owner,
+#            repo: context.repo.repo,
+#            ref: 'refs/tags/${{ env.VERSIONNAME }}',
+#            sha: context.sha
+#          })
       
     - name: Decode Keystore
       id: decode_keystore
@@ -153,11 +159,11 @@ jobs:
         name: VersionName.txt
         path: ${{ github.workspace }}/app/VersionName.txt
 
-    - name: Upload Artifact Changelog
-      uses: actions/upload-artifact@v2
-      with:
-        name: Changelog.txt
-        path: ${{ github.workspace }}/app/Changelog.txt
+#    - name: Upload Artifact Changelog
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: Changelog.txt
+#        path: ${{ github.workspace }}/app/Changelog.txt
 
   merge_completed:
     needs: build
