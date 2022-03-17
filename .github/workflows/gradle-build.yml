@@ -200,27 +200,22 @@ jobs:
         echo "Read Gradle VersionName"
         echo "VERSIONNAME=$(cat VersionName.txt)" >> $GITHUB_ENV
 
-    - name: Output Gradle VersionName
-      run : |
-        echo "Output Gradle VersionName"
-        echo "${{ env.VERSIONNAME }}"
+#    - name: Download Artifact Changelog
+#      uses: actions/download-artifact@v3.0.0
+#      with:
+#        name: Changelog.txt
+#        path: ${{ github.workspace }}/artifact
 
-    - name: Download Artifact Changelog
-      uses: actions/download-artifact@v3.0.0
-      with:
-        name: Changelog.txt
-        path: ${{ github.workspace }}/artifact
+#    - name: Read Changelog
+#      working-directory : ${{ github.workspace }}/artifact
+#      run : |
+#        echo "Read Changelog"
+#        echo "CHANGELOG=$(cat Changelog.txt)" >> $GITHUB_ENV
 
-    - name: Read Changelog
-      working-directory : ${{ github.workspace }}/artifact
-      run : |
-        echo "Read Changelog"
-        echo "CHANGELOG=$(cat Changelog.txt)" >> $GITHUB_ENV
-
-    - name: Output Changelog
-      run : |
-        echo "Output Changelog"
-        echo "${{ env.CHANGELOG }}"
+#    - name: Output Changelog
+#      run : |
+#        echo "Output Changelog"
+#        echo "${{ env.CHANGELOG }}"
 
     - name: Download Artifact APK
       uses: actions/download-artifact@v3.0.0
