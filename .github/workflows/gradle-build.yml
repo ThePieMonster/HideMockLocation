@@ -33,7 +33,7 @@ jobs:
         REQUIRED_LABELS_ANY_DESCRIPTION: "Select at least one label ['bug','documentation','enhancement']"
         BANNED_LABELS: "banned"
 
-    - name: Checkout code
+    - name: Checkout Code
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
