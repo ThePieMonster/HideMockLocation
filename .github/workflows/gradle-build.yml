@@ -1,12 +1,12 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: Gradle
+name: Gradle Build
 
 on:
   pull_request:
     branches: [ main ]
-    types: [opened, closed, reopened, synchronize]
+    types: [opened, closed, reopened, synchronize, edited]
 
 permissions: write-all
 
@@ -33,7 +33,7 @@ jobs:
         REQUIRED_LABELS_ANY_DESCRIPTION: "Select at least one label ['bug','documentation','enhancement']"
         BANNED_LABELS: "banned"
 
-    - name: Checkout code
+    - name: Checkout Code
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
@@ -43,68 +43,44 @@ jobs:
 #      with:
 #        java-version: '11'
 #        distribution: 'temurin'
-        
+    
+    - name: Get Latest Release Tag
+      working-directory : ${{ github.workspace }}/app
+      run : |
+        echo "Get Latest Release Tag"
+        LATESTRELEASETAG=$(curl -s https://api.github.com/repos/thepiemonster/hidemocklocation/releases/latest | grep "tag_name" | grep -oP '"tag_name": "\K[^"]+')
+        echo "$LATESTRELEASETAG"
+        echo "LATESTRELEASETAG=$LATESTRELEASETAG" >> $GITHUB_ENV
+    
+    - name: Create Latest Release TXT File
+      working-directory : ${{ github.workspace }}/app
+      run : |
+        echo "Create Latest Release TXT File"
+        echo "${{ env.LATESTRELEASETAG }}" > LatestReleaseTag.txt
+    
     - name: Get Gradle VersionName
       working-directory : ${{ github.workspace }}/app
       run : |
         echo "Get Gradle VersionName"
-        echo "VERSIONNAME=$(grep 'versionName' build.gradle | awk '{print $2}')" | tr -d '"' >> $GITHUB_ENV
+        VERSIONNAME=$(grep 'versionName' build.gradle | awk '{print $2}' | tr -d '"')
+        echo "$VERSIONNAME"
+        echo "VERSIONNAME=$VERSIONNAME" >> $GITHUB_ENV
   
-    - name: Output Gradle VersionName
-      run : |
-        echo "Output Gradle VersionName"
-        echo "${{ env.VERSIONNAME }}"
-      
     - name: Create Gradle VersionName TXT File
       working-directory : ${{ github.workspace }}/app
       run : |
         echo "Create Gradle VersionName TXT File"
         echo "${{ env.VERSIONNAME }}" > VersionName.txt
-      
-    - name: Check If Current Tag Already Exists 
-      uses: mukunku/tag-exists-action@v1.0.0
-      id: checkTag
-      with: 
-        tag: ${{ env.VERSIONNAME }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Output Tag Check 
-      run: |
-        echo "Tag Check: ${{ steps.checkTag.outputs.exists }}"
-        echo "TAGCHECK=${{ steps.checkTag.outputs.exists }}" >> $GITHUB_ENV
-
-    - name: Create Tag
-      if: env.TAGCHECK == format('false')
-      uses: actions/github-script@v5
-      with:
-        script: |
-          github.rest.git.createRef({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            ref: 'refs/tags/${{ env.VERSIONNAME }}',
-            sha: context.sha
-          })
-      
-    - name: Get Changelog
-      uses: mikepenz/release-changelog-builder-action@v2
-      id: Changelog
-      with:
-          configuration: ".github/configs/configuration.json"
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-    - name: Output Changelog
-      run : |
-        echo "Output Changelog"
-        echo "${{ steps.Changelog.outputs.changelog }}"
-      
-    - name: Create Changelog TXT File
+    - name: Check If Gradle Version Equals Latest Release Tag
       working-directory : ${{ github.workspace }}/app
       run : |
-        echo "Create Changelog TXT File"
-        echo "${{ steps.Changelog.outputs.changelog }}" > Changelog.txt
-      
+        VERSIONNAME=${{ env.VERSIONNAME }}
+        LATESTRELEASETAG=${{ env.LATESTRELEASETAG }}
+        echo "Gradle Version Name: $VERSIONNAME"
+        echo "Latest Release Tag: $LATESTRELEASETAG"
+        if [ "$VERSIONNAME" = "$LATESTRELEASETAG" ]; then echo "Current Gradle Version is the same as GitHubs latest Release tag. This will create a tagging conflict when PR is merged due to every PR creating a release. This can be resolved by updating the build.gradle file."; exit 1; else echo "All clear!"; fi
+           
     - name: Decode Keystore
       id: decode_keystore
       uses: timheuer/base64-to-file@v1
@@ -158,11 +134,7 @@ jobs:
         name: VersionName.txt
         path: ${{ github.workspace }}/app/VersionName.txt
 
-    - name: Upload Artifact Changelog
-      uses: actions/upload-artifact@v2
-      with:
-        name: Changelog.txt
-        path: ${{ github.workspace }}/app/Changelog.txt
+
 
   merge_completed:
     needs: build
@@ -170,10 +142,15 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
     - name: Display PR Number
       run: |
         echo "PR #${{ github.event.number }} has been merged"
-
+    
     - name: Download Artifact VersionName
       uses: actions/download-artifact@v3.0.0
       with:
@@ -185,28 +162,7 @@ jobs:
       run : |
         echo "Read Gradle VersionName"
         echo "VERSIONNAME=$(cat VersionName.txt)" >> $GITHUB_ENV
-
-    - name: Output Gradle VersionName
-      run : |
-        echo "Output Gradle VersionName"
-        echo "${{ env.VERSIONNAME }}"
-
-    - name: Download Artifact Changelog
-      uses: actions/download-artifact@v3.0.0
-      with:
-        name: Changelog.txt
-        path: ${{ github.workspace }}/artifact
-
-    - name: Read Changelog
-      working-directory : ${{ github.workspace }}/artifact
-      run : |
-        echo "Read Changelog"
-        echo "CHANGELOG=$(cat Changelog.txt)" >> $GITHUB_ENV
-
-    - name: Output Changelog
-      run : |
-        echo "Output Changelog"
-        echo "${{ env.CHANGELOG }}"
+        echo "$VERSIONNAME"
 
     - name: Download Artifact APK
       uses: actions/download-artifact@v3.0.0
@@ -219,6 +175,50 @@ jobs:
       run : | 
         echo "${{ github.workspace }}/artifact"
         ls -la
+
+    - name: Check If Current VersionName Exists As Tag 
+      uses: mukunku/tag-exists-action@v1.0.0
+      id: checkTag
+      with: 
+        tag: ${{ env.VERSIONNAME }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Output Tag Check 
+      run: |
+        echo "Tag Check: ${{ steps.checkTag.outputs.exists }}"
+        echo "TAGCHECK=${{ steps.checkTag.outputs.exists }}" >> $GITHUB_ENV 
+        
+    - name: Tag Exists
+      if: env.TAGCHECK == format('true')
+      run: |
+        echo "Current VersionName Exists As Tag"
+        exit 1
+        
+    - name: Create Tag
+      if: env.TAGCHECK == format('false')
+      uses: actions/github-script@v5
+      with:
+        script: |
+          github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'refs/tags/${{ env.VERSIONNAME }}',
+            sha: context.sha
+          })
+      
+    - name: Get Changelog
+      uses: mikepenz/release-changelog-builder-action@v2
+      id: Changelog
+      with:
+          configuration: ".github/configs/configuration.json"
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+    - name: Output Changelog
+      run : |
+        echo "Output Changelog"
+        echo "${{ steps.Changelog.outputs.changelog }}"
       
     - name: Create Release
       id: create_release
@@ -228,8 +228,7 @@ jobs:
       with:
         tag_name: ${{ env.VERSIONNAME }}
         release_name: ${{ env.VERSIONNAME }}
-        body: |
-          ${{ env.CHANGELOG }}
+        body: ${{ steps.Changelog.outputs.changelog }}
         draft: false
         prerelease: false
  
@@ -254,6 +253,8 @@ jobs:
         token: ${{ secrets.REPO_TOKEN }}
         owner: Xposed-Modules-Repo
         repo: com.github.thepiemonster.hidemocklocation
+
+
 
   merge_incomplete:
     needs: build

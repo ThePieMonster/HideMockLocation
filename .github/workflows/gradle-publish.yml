@@ -1,0 +1,33 @@
+# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
+
+name: GitHub Release
+
+on:
+  workflow_run:
+    workflows: ["Gradle Build XXX"]
+    types:
+      - completed
+
+permissions: write-all
+
+jobs:
+  release_on_build_success:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+
+  release_on_build_failed:
+    if: ${{ github.event.workflow_run.conclusion != 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Notice 
+      run: |
+        echo "The 'Gradle Build' workflow failed."
