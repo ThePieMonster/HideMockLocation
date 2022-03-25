@@ -264,4 +264,4 @@ jobs:
     steps:
     - name: PR Closed Without Merge
       run: |
-        echo "PR #${{ github.event.number }} has been closed without being merged"
+        echo "PR #${{ github.event.number }} has been edited or closed without being merged"

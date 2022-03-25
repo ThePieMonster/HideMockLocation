@@ -34,7 +34,7 @@
     <string name="about_introduction_content">This module is designed to hide the use of the Android Mock Locations feature from system and application usage. When this module is enabled, the mock locations feature will show as disabled to all applications. \n\nhttps://github.com/ThePieMonster/HideMockLocation</string>
 
     <string name="about_legal_title">Legal</string>
-    <string name="about_legal_content">You agree to use this module (i.e. Hide Mock Locations) only for legally compliant purposes. You agree that the author will not be held liable for any consequences resulting from a violation of this statement. \n\nBy continuing to use this module, you agree to the above terms.</string>
+    <string name="about_legal_content">You agree to use this module (i.e. Hide Mock Location) only for legally compliant purposes. You agree that the author will not be held liable for any consequences resulting from a violation of this statement. \n\nBy continuing to use this module, you agree to the above terms.</string>
 
     <string name="about_recommendation_title">Recommendations</string>
 

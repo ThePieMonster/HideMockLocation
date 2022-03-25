@@ -19,6 +19,7 @@ Hide Mock Location is an Xposed Module (now LSPosed on Android 11), which hides 
 ## Usage
 * Install [module](https://github.com/Xposed-Modules-Repo/com.github.thepiemonster.hidemocklocation) from [LSPosed module store](https://github.com/LSPosed/LSPosed).
 * Enable module in LSPosed (select System Framework) and reboot device.
+* Start a mock location provider application such as [Fake GPS Location](https://play.google.com/store/apps/details?id=com.lexa.fakegps&hl=en_US&gl=US).
 * That's it! You can open Hide Mock Location and view the "Test Location Data" page to view the status of the mock location setting.
 
 ## Tips

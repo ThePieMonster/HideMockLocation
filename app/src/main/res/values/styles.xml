@@ -1,22 +1,20 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
+    <style name="AppTheme" parent="Theme.MaterialComponents">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlActivated">@color/colorAccent</item>
-        <item name="android:textColorPrimary">@color/colorDark</item>
-        <item name="colorSwitchThumbNormal">@color/colorDark</item>
-        <item name="android:actionMenuTextColor">#fff</item>
-        <item name="android:textColor">@color/colorDark</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="colorSwitchThumbNormal">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.ActionBar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
-        <item name="android:actionMenuTextColor">#fff</item>
-        <item name="android:textColor">#fff</item>
+    <style name="AppTheme.Background" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:background">@color/softDarkGray1</item>
     </style>
 
     <style name="AppTheme.Launcher" parent="Theme.MaterialComponents.NoActionBar">
@@ -27,19 +25,21 @@
     <style name="AlertDialogTheme">
         <item name="buttonBarPositiveButtonStyle">@style/Alert.Button.Positive</item>
         <item name="buttonBarNeutralButtonStyle">@style/Alert.Button.Neutral</item>
+        <item name="backgroundColor">@color/colorPrimary</item>
     </style>
     <style name="Alert.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="backgroundTint">@color/colorPrimaryDark</item>
-        <item name="rippleColor">@color/colorAccent</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="rippleColor">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">14sp</item>
     </style>
     <style name="Alert.Button.Neutral" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="backgroundTint">@android:color/transparent</item>
         <item name="rippleColor">@color/colorAccent</item>
-        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:textColor">@color/purple_200</item>
         <item name="android:textSize">14sp</item>
     </style>
+
 
     <!-- Rikka Design -->
     <style name="Default">
