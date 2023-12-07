@@ -22,6 +22,7 @@ public class XposedModule implements IXposedHookZygoteInit, IXposedHookLoadPacka
 
     public XC_ProcessNameMethodHook hideAllowMockSettingHook;
     public XC_ProcessNameMethodHook hideMockProviderHook;
+    public XC_ProcessNameMethodHook setFromMockProviderHook;
     public XC_ProcessNameMethodHook hideMockGooglePlayServicesHook;
 
     // Hook with additional member - processName
@@ -111,9 +112,13 @@ public class XposedModule implements IXposedHookZygoteInit, IXposedHookLoadPacka
                 hideMockGooglePlayServicesHook.init(lpparam.processName, lpparam.packageName));
 
         // New way of checking if location is mocked, SDK 18+
-        if (Common.JB_MR2_NEWER)
-            XposedHelpers.findAndHookMethod("android.location.Location", lpparam.classLoader,
-                    "isFromMockProvider", hideMockProviderHook.init(lpparam.processName, lpparam.packageName));
+        if (Common.JB_MR2_NEWER) {
+	        XposedHelpers.findAndHookMethod("android.location.Location", lpparam.classLoader,
+	                "isFromMockProvider", hideMockProviderHook.init(lpparam.processName, lpparam.packageName));
+            
+	        XposedHelpers.findAndHookMethod("android.location.Location", lpparam.classLoader,
+	                "setIsFromMockProvider", boolean.class, setFromMockProviderHook.init(lpparam.processName, lpparam.packageName));
+        }
 
         // Self hook - informing Activity that Xposed module is enabled
         if(lpparam.packageName.equals(Common.PACKAGE_NAME))
@@ -166,6 +171,18 @@ public class XposedModule implements IXposedHookZygoteInit, IXposedHookLoadPacka
                 if (!isGMSWhitelisted || !this.packageName.equals(Common.GMS_PACKAGE)) {
                     if(isHidingEnabled())
                         param.setResult(false);
+                }
+            }
+        };
+	    
+	    setFromMockProviderHook = new XC_ProcessNameMethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                reloadPrefs();
+                boolean isGMSWhitelisted = prefs.getBoolean(Common.PREF_GMS_WHITELISTED, false);
+                if (!isGMSWhitelisted || !this.packageName.equals(Common.GMS_PACKAGE)) {
+                    if(isHidingEnabled())
+                        param.args[0] = false;
                 }
             }
         };
