@@ -1,6 +1,7 @@
 package com.github.thepiemonster.hidemocklocation;
 
 import android.content.ContentResolver;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 
@@ -119,7 +120,11 @@ public class XposedModule implements IXposedHookZygoteInit, IXposedHookLoadPacka
 	        XposedHelpers.findAndHookMethod("android.location.Location", lpparam.classLoader,
 	                "setIsFromMockProvider", boolean.class, setFromMockProviderHook.init(lpparam.processName, lpparam.packageName));
         }
-
+        
+        if (Build.VERSION.SDK_INT >= 31)
+            XposedHelpers.findAndHookMethod("android.location.Location", lpparam.classLoader,
+                    "isMock", hideMockProviderHook.init(lpparam.processName, lpparam.packageName));
+        
         // Self hook - informing Activity that Xposed module is enabled
         if(lpparam.packageName.equals(Common.PACKAGE_NAME))
             XposedHelpers.findAndHookMethod(Common.ACTIVITY_NAME, lpparam.classLoader, "isModuleEnabled",
